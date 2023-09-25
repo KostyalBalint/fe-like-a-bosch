@@ -1,0 +1,8 @@
+mutation createMessage($content: String!) {
+    createMessage(createMessageInput: {
+        content: $content
+    }){
+        id
+        createdAt
+    }
+}

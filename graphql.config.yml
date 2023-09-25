@@ -1,0 +1,2 @@
+schema: ${REACT_APP_GRAPHQL_ENDPOINT}
+documents: '**/*.graphql'
