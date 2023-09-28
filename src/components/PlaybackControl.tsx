@@ -106,6 +106,7 @@ export function PlaybackControl({
         sx={{ width: "100%" }}
         value={(value / total) * 100}
         variant="buffer"
+        valueBuffer={50}
       />
     </Stack>
   );

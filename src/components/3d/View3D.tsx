@@ -1,49 +1,54 @@
-import React, { ReactElement } from "react";
-import { Canvas } from "@react-three/fiber";
-import { BasePlane } from "./BasePlane";
-import { Lights } from "./Lights";
-import { Controls } from "./Controls";
-import { ACESFilmicToneMapping, sRGBEncoding } from "three";
-import { Environment, Sky, useAnimations } from "@react-three/drei";
-import { Ego } from "./Ego";
-import { Perf } from "r3f-perf";
-import { ObjectData } from "../../pages/DatasetSelectionPage";
+import React, { ReactElement, useMemo } from 'react'
+import { Canvas } from '@react-three/fiber'
+import { BasePlane } from './BasePlane'
+import { Lights } from './Lights'
+import { Controls } from './Controls'
+import { ACESFilmicToneMapping, Scene, FogExp2, Vector3 } from 'three'
+import { Environment, Sky, SpotLight, useAnimations, useKeyboardControls } from '@react-three/drei'
+import { Ego } from './Ego'
+import { Perf } from 'r3f-perf'
+import { ObjectData } from '../../pages/DatasetSelectionPage'
+import { KeyboardsControls } from '../../pages/SimulationPage'
 
 interface View3DConfig {
-  showPredictions: boolean;
+    showPredictions: boolean
 }
 
 interface View3DProps {
-  ego: ObjectData;
-  objects: ObjectData[];
-  config: View3DConfig;
+    ego: ObjectData
+    objects: ObjectData[]
+    config: View3DConfig
 }
 
 export function View3D(props: View3DProps): ReactElement {
-  return (
-    <Canvas
-      style={{ height: "100%", width: "100%" }}
-      gl={{
-        antialias: true,
-        outputEncoding: sRGBEncoding,
-        toneMapping: ACESFilmicToneMapping,
-        toneMappingExposure: 0.85,
-        pixelRatio: window.devicePixelRatio,
-      }}
-    >
-      <scene>
-        <Perf />
-        <Sky sunPosition={[7, 5, 1]} />
+    const sceneRef = React.useRef<Scene>(new Scene())
 
-        <Environment files="assets/venice_sunset_1k.hdr" path="/" />
+    const forwardPressed = useKeyboardControls<KeyboardsControls>((state) => state.forward)
 
-        <Lights />
+    return (
+        <Canvas
+            style={{ height: '100%', width: '100%' }}
+            gl={{
+                antialias: true,
+                outputColorSpace: 'srgb',
+                toneMapping: ACESFilmicToneMapping,
+                toneMappingExposure: 0.8,
+                pixelRatio: window.devicePixelRatio,
+            }}
+        >
+            <scene ref={sceneRef}>
+                <Perf position="top-left" />
+                <Sky sunPosition={[7, 5, 1]} />
 
-        <Ego showSensors={false} showBlindSpots={false} />
+                <Environment files="assets/venice_sunset_1k.hdr" path="/" />
 
-        <BasePlane />
-        <Controls />
-      </scene>
-    </Canvas>
-  );
+                <Lights />
+
+                <Ego objectData={props.ego} />
+
+                <BasePlane />
+                <Controls cameraLookAt={new Vector3(props.ego.position.x, 0, props.ego.position.y)} />
+            </scene>
+        </Canvas>
+    )
 }

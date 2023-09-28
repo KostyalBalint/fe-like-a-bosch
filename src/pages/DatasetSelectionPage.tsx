@@ -1,6 +1,6 @@
 import { Button, Stack } from "@mui/material";
 import { parseCSV } from "../utils/parseCSV";
-import { Vector3 } from "three";
+import { Vector2 } from "three";
 
 export interface CSVData {
   timestamp: number;
@@ -9,13 +9,13 @@ export interface CSVData {
 
 export interface ObjectData {
   id: number;
-  position: Vector3;
-  velocity: Vector3;
+  position: Vector2;
+  velocity: Vector2;
 }
 
 interface Prediction {
   timestamp: number;
-  position: Vector3;
+  position: Vector2;
 }
 
 export interface ObjectDataWithPrediction extends ObjectData {

@@ -3,7 +3,12 @@ import { SimulationPage } from "./pages/SimulationPage";
 import { CSVData, DatasetSelectionPage } from "./pages/DatasetSelectionPage";
 
 function App() {
-  const [dataset, setDataset] = useState<CSVData[]>([]);
+  const [dataset, setDataset] = useState<CSVData[]>([
+    {
+      objects: [],
+      timestamp: 0,
+    },
+  ]);
 
   if (dataset && dataset.length === 0) {
     return <DatasetSelectionPage onSelect={setDataset} />;

@@ -8,11 +8,6 @@ export function setMaterials(
   color: string,
   opacity: number,
 ) {
-  carModel.traverse((o) => {
-    if (o.isMesh) {
-      console.log(o.name);
-    }
-  });
   const bodyMaterial = new MeshPhysicalMaterial({
     color: color,
     opacity: opacity,
