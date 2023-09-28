@@ -1,54 +1,15 @@
-import React from "react";
-import "./App.css";
-import { Box } from "@mui/material";
-import { MessagesPages } from "./pages/Messages";
-import { useSnackbar } from "notistack";
-import { onError } from "@apollo/client/link/error";
-import {
-  ApolloClient,
-  ApolloProvider,
-  from,
-  HttpLink,
-  InMemoryCache,
-} from "@apollo/client";
+import React, { useState } from "react";
+import { SimulationPage } from "./pages/SimulationPage";
+import { CSVData, DatasetSelectionPage } from "./pages/DatasetSelectionPage";
 
 function App() {
-  const { enqueueSnackbar } = useSnackbar();
+  const [dataset, setDataset] = useState<CSVData[]>([]);
 
-  const errorLink = onError(({ graphQLErrors, networkError }) => {
-    if (graphQLErrors) {
-      graphQLErrors.forEach((error) => {
-        enqueueSnackbar({
-          variant: "error",
-          message: `[${error.name}]${error.message}`,
-        });
-      });
-    }
+  if (dataset && dataset.length === 0) {
+    return <DatasetSelectionPage onSelect={setDataset} />;
+  }
 
-    if (networkError) {
-      // handle network error
-      enqueueSnackbar({
-        variant: "error",
-        message: `[${networkError.name}]: ${networkError.message}`,
-      });
-    }
-  });
-
-  const client = new ApolloClient({
-    link: from([
-      errorLink,
-      new HttpLink({ uri: process.env.REACT_APP_GRAPHQL_ENDPOINT }),
-    ]),
-    cache: new InMemoryCache(),
-  });
-
-  return (
-    <ApolloProvider client={client}>
-      <Box pt={5}>
-        <MessagesPages />
-      </Box>
-    </ApolloProvider>
-  );
+  return <SimulationPage values={[]} />;
 }
 
 export default App;
