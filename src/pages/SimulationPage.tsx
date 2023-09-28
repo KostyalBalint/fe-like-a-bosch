@@ -5,7 +5,6 @@ import { View3D } from '../components/3d/View3D'
 import { ObjectDataWithPrediction } from './DatasetSelectionPage'
 import { PlaybackControl } from '../components/PlaybackControl'
 import { KeyboardControls, KeyboardControlsEntry } from '@react-three/drei'
-import { useFrame } from '@react-three/fiber'
 
 enum ScenarioType {
     CPNCO = 'CPNCO',

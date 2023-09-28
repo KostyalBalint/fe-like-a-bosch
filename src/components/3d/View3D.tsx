@@ -4,10 +4,12 @@ import { BasePlane } from './BasePlane'
 import { Lights } from './Lights'
 import { Controls } from './Controls'
 import { ACESFilmicToneMapping, Scene, Vector3 } from 'three'
-import { Environment, Sky } from '@react-three/drei'
+import { Environment, Sky, useKeyboardControls } from '@react-three/drei'
 import { Ego } from './Ego'
 import { Perf } from 'r3f-perf'
 import { ObjectData } from '../../pages/DatasetSelectionPage'
+import { Pedestrian, PedestrianMovementState } from './objects/Pedestrian'
+import { KeyboardsControls } from '../../pages/SimulationPage'
 
 interface View3DConfig {
     showPredictions: boolean
@@ -21,6 +23,9 @@ interface View3DProps {
 
 export function View3D(props: View3DProps): ReactElement {
     const sceneRef = React.useRef<Scene>(new Scene())
+
+    const forwardPressed = useKeyboardControls<KeyboardsControls>((state) => state.forward)
+    const backwardPressed = useKeyboardControls<KeyboardsControls>((state) => state.back)
 
     return (
         <Canvas
@@ -40,6 +45,19 @@ export function View3D(props: View3DProps): ReactElement {
                 <Environment files="assets/venice_sunset_1k.hdr" path="/" />
 
                 <Lights />
+
+                <Pedestrian
+                    x={0}
+                    y={0}
+                    heading={0}
+                    movementState={
+                        forwardPressed
+                            ? PedestrianMovementState.Running
+                            : backwardPressed
+                            ? PedestrianMovementState.Idle
+                            : PedestrianMovementState.Walking
+                    }
+                />
 
                 <Ego objectData={props.ego} />
 
