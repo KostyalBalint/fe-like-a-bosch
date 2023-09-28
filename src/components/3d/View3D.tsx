@@ -1,14 +1,13 @@
-import React, { ReactElement, useMemo } from 'react'
+import React, { ReactElement } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { BasePlane } from './BasePlane'
 import { Lights } from './Lights'
 import { Controls } from './Controls'
-import { ACESFilmicToneMapping, Scene, FogExp2, Vector3 } from 'three'
-import { Environment, Sky, SpotLight, useAnimations, useKeyboardControls } from '@react-three/drei'
+import { ACESFilmicToneMapping, Scene, Vector3 } from 'three'
+import { Environment, Sky } from '@react-three/drei'
 import { Ego } from './Ego'
 import { Perf } from 'r3f-perf'
 import { ObjectData } from '../../pages/DatasetSelectionPage'
-import { KeyboardsControls } from '../../pages/SimulationPage'
 
 interface View3DConfig {
     showPredictions: boolean
@@ -22,8 +21,6 @@ interface View3DProps {
 
 export function View3D(props: View3DProps): ReactElement {
     const sceneRef = React.useRef<Scene>(new Scene())
-
-    const forwardPressed = useKeyboardControls<KeyboardsControls>((state) => state.forward)
 
     return (
         <Canvas

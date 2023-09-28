@@ -5,6 +5,7 @@ import { View3D } from '../components/3d/View3D'
 import { ObjectDataWithPrediction } from './DatasetSelectionPage'
 import { PlaybackControl } from '../components/PlaybackControl'
 import { KeyboardControls, KeyboardControlsEntry } from '@react-three/drei'
+import { useFrame } from '@react-three/fiber'
 
 enum ScenarioType {
     CPNCO = 'CPNCO',
@@ -54,8 +55,6 @@ export const SimulationPage = (props: SimulationPageProps) => {
         }
     }, [])
 
-    const currentSimulationResult = props.values[currentSimulationStep]
-
     const map = useMemo<KeyboardControlsEntry<KeyboardsControls>[]>(
         () => [
             { name: KeyboardsControls.forward, keys: ['ArrowUp', 'KeyW'] },
@@ -74,8 +73,8 @@ export const SimulationPage = (props: SimulationPageProps) => {
                         showPredictions: true,
                     }}
                     ego={{
-                        position: new Vector2(0, 0),
-                        velocity: new Vector2(2, 0),
+                        position: new Vector2(-2, -2),
+                        velocity: new Vector2(-1, 0),
                         id: 0,
                     }}
                     objects={[]}

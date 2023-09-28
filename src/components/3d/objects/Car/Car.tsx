@@ -1,12 +1,11 @@
-import { Color, ConeGeometry, Euler, Object3D, Vector3 } from 'three'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { Color, ColorRepresentation, Group, Object3D, Vector2, Vector3 } from 'three'
+import React, { useEffect, useMemo, useState } from 'react'
 import { setMaterials } from './setCarMaterials'
-import { useFrame, useThree } from '@react-three/fiber'
-import { Cone, SpotLight, useDepthBuffer, useGLTF } from '@react-three/drei'
+import { useFrame } from '@react-three/fiber'
+import { useGLTF } from '@react-three/drei'
 import { getCarSensors } from './getCarSensors'
-import { isNumberObject } from 'util/types'
-import { SpotLightNode } from 'three/examples/jsm/nodes/Nodes'
 import { volumetricSpotlightMaterial } from '../../helpers/VolumetricMaterial'
+import { customArrow } from '../../helpers/customArrow'
 
 interface CarProps {
     x: number
@@ -18,7 +17,23 @@ interface CarProps {
     color?: string
     opacity?: number
     showSensors?: boolean
-    displayHeading?: boolean
+    predictions?: Vector2[]
+}
+
+const predictionsToArrows = (predictions: Vector2[] | undefined, currentPos: Vector3, posYOffset: number, color: ColorRepresentation): Group[] => {
+    if (!predictions) return []
+
+    const start = new Vector2(currentPos.x, currentPos.z)
+    const poses = [start, ...predictions]
+    let arrows = []
+
+    for (let i = 1; i < poses.length; i++) {
+        const start = new Vector3(poses[i - 1].x, posYOffset, poses[i - 1].y)
+        const end = new Vector3(poses[i].x, posYOffset, poses[i].y)
+        const arrow = customArrow(start, end, 0.02, color)
+        arrows.push(arrow)
+    }
+    return arrows
 }
 
 export const Car = ({ color = 'gray', opacity = 1, ...props }: CarProps) => {
@@ -74,6 +89,9 @@ export const Car = ({ color = 'gray', opacity = 1, ...props }: CarProps) => {
         })
     })
 
+    /* eslint-disable react-hooks/exhaustive-deps */
+    const predictionArrows = useMemo(() => predictionsToArrows(props.predictions, new Vector3(props.x, 0, props.y), 1.5, 'red'), [props.predictions])
+
     const spotLightPositions: {
         position: [number, number, number]
     }[] = [
@@ -89,54 +107,50 @@ export const Car = ({ color = 'gray', opacity = 1, ...props }: CarProps) => {
         attenuation: 10,
         anglePower: 2,
         lightColor: new Color('#ffdeb8'),
-        spotPosition: new Vector3(0, 0, 0),
+        spotPosition: new Vector3(props.x, 0.6, props.y),
     })
 
     return (
         <>
             {model && (
-                <group position={[props.x, 0, props.y]} rotation={[0, props.heading + Math.PI / 2, 0]}>
-                    <group rotation={[0, Math.PI, 0]} position={[0, 0, 1.33]} scale={[0.98, 0.98, 0.98]}>
-                        <primitive object={model} />
+                <>
+                    <group position={[props.x, 0, props.y]} rotation={[0, props.heading, 0]}>
+                        <group rotation={[0, Math.PI / 2, 0]}>
+                            <group rotation={[0, Math.PI, 0]} position={[0, 0, 1.33]} scale={[0.98, 0.98, 0.98]}>
+                                <primitive object={model} />
+                            </group>
+                            {props.showSensors &&
+                                sensors.map((sensor) => (
+                                    <>
+                                        <primitive object={sensor.camera} key={sensor.camera.uuid} />
+                                        <primitive object={sensor.helper} key={sensor.helper.uuid} />
+                                    </>
+                                ))}
+                            {props.headlights && (
+                                <>
+                                    {spotLightPositions.map(({ position }, i) => {
+                                        const angle = i % 2 === 0 ? Math.PI / 16 : -Math.PI / 16
+                                        return (
+                                            <group key={position.join(',')} rotation={[-Math.PI / 2, 0, angle]} position={position}>
+                                                <mesh position={[0, -2.5, 0]}>
+                                                    {/* @ts-ignore */}
+                                                    <coneGeometry args={[1.8, 5, 32]} openEnded />
+                                                    <primitive object={headLightMaterial} />
+                                                </mesh>
+                                            </group>
+                                        )
+                                    })}
+                                </>
+                            )}
+                        </group>
                     </group>
-                    {props.showSensors &&
-                        sensors.map((sensor) => (
-                            <>
-                                <primitive object={sensor.camera} key={sensor.camera.uuid} />
-                                <primitive object={sensor.helper} key={sensor.helper.uuid} />
-                            </>
+                    <group rotation={[0, 0, 0]}>
+                        {predictionArrows.map((arrow) => (
+                            <primitive key={`${arrow.position.x}${arrow.position.z}`} object={arrow} />
                         ))}
-                    {props.headlights && (
-                        <>
-                            {spotLightPositions.map(({ position }, i) => {
-                                const angle = i % 2 === 0 ? Math.PI / 16 : -Math.PI / 16
-                                return (
-                                    <group rotation={[-Math.PI / 2, 0, angle]} position={position}>
-                                        <mesh position={[0, -2.5, 0]}>
-                                            {/* @ts-ignore */}
-                                            <coneGeometry args={[1.8, 5, 32]} openEnded />
-                                            <primitive object={headLightMaterial} />
-                                        </mesh>
-                                    </group>
-                                )
-                            })}
-                        </>
-                    )}
-                </group>
+                    </group>
+                </>
             )}
         </>
     )
 }
-/*
-<SpotLight
-                                        key={position.join(',')}
-                                        ref={ref}
-                                        distance={4}
-                                        angle={0.3}
-                                        attenuation={5}
-                                        anglePower={0}
-                                        position={position}
-                                        target={target}
-                                        color="yellow"
-                                    />
- */
