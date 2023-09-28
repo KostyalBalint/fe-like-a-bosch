@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@apollo/client": "^3.8.4",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.11",
@@ -17,7 +16,7 @@
     "@types/node": "^16.18.54",
     "@types/react": "^18.2.22",
     "@types/react-dom": "^18.2.7",
-    "graphql": "^16.8.1",
+    "material-ui-popup-state": "^5.0.9",
     "moment": "^2.29.4",
     "notistack": "^3.0.1",
     "prettier": "^3.0.3",
@@ -34,8 +33,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "codegen": "NODE_TLS_REJECT_UNAUTHORIZED=0 graphql-codegen --config codegen.ts"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
