@@ -27,8 +27,9 @@ export class CollisionAvoidanceSimulation implements Simulation {
         //const filteredObjects = this.filter.filterObjects(this.dataset[step].objects)
 
         // 2. Predict objects
-        const objectsWithPredictions = this.predictionEngine.predictAll(this.dataset[step].objects)
+        const objectsWithPredictions = this.predictionEngine.predictAll(this.dataset[step].objects, this.dataset[step].timestamp)
 
+        const egoPrediction = this.predictionEngine.predictEgo(this.dataset[step].vehicleSpeed, this.heading, this.dataset[step].timestamp)
         // 3. Recognize scenario
         const scenarioType = this.scenarioRecognizer.recognizeScenario(objectsWithPredictions)
 
@@ -43,6 +44,7 @@ export class CollisionAvoidanceSimulation implements Simulation {
             ego: {
                 speed: this.dataset[step].vehicleSpeed,
                 heading: this.heading,
+                predictions: egoPrediction,
             },
             objects: objectsWithPredictions,
             avoidanceData,

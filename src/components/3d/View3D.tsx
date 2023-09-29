@@ -6,7 +6,7 @@ import { ACESFilmicToneMapping, Color, Scene, Vector2 } from 'three'
 import { Environment, OrbitControls, PerspectiveCamera, Sky } from '@react-three/drei'
 import { Ego } from './Ego'
 import { Perf } from 'r3f-perf'
-import { ObjectData, ObjectDataWithPrediction } from '../../pages/DatasetSelectionPage'
+import { ObjectData, Prediction, ObjectDataWithPrediction } from '../../pages/DatasetSelectionPage'
 import { UnknownObject } from './objects/UnknownObject'
 import { PerspectiveCamera as PerspectiveCameraImpl } from 'three/src/cameras/PerspectiveCamera'
 import { OrbitControls as OrbitControlsImpl } from 'three-stdlib/controls/OrbitControls'
@@ -21,6 +21,7 @@ interface View3DProps {
     ego: {
         speed: number
         heading: number
+        predictions: Prediction[]
     }
     objects: ObjectDataWithPrediction[]
     config: View3DConfig
@@ -76,7 +77,7 @@ const MyScene = (props: View3DProps) => {
                     )
                 })}
 
-                <Ego heading={props.ego.heading} isPlaying={props.isPlaying} />
+                <Ego heading={props.ego.heading} predictions={props.ego.predictions} isPlaying={props.isPlaying} />
 
                 <BasePlane
                     velocity={
