@@ -49,22 +49,6 @@ export const Car = ({ color = 'gray', opacity = 1, ...props }: CarProps) => {
 
     useEffect(() => {
         const carModel = rawModel.scene.children[0]
-        let triangles = 0
-        carModel.traverseVisible(function (object) {
-            // @ts-ignore
-            if (object.isMesh) {
-                // @ts-ignore
-                const geometry = object.geometry
-
-                if (geometry.index !== null) {
-                    triangles += geometry.index.count / 3
-                } else {
-                    triangles += geometry.attributes.position.count / 3
-                }
-            }
-        })
-
-        console.log('Car has ' + triangles + ' triangles')
 
         if (!carModel) {
             console.error('No car model found')
