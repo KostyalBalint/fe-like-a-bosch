@@ -1,16 +1,10 @@
-import React from 'react';
+import React from 'react'
 
 export function Lights() {
-  return (
-    <>
-      <ambientLight />
-      <pointLight
-        shadow-mapSize-width={4096}
-        shadow-mapSize-height={4096}
-        position={[0, 10, 0]}
-        intensity={0.5}
-        castShadow={false}
-      />
-    </>
-  );
+    return (
+        <>
+            <ambientLight />
+            <pointLight shadow-mapSize-width={4096} shadow-mapSize-height={4096} position={[0, 10, 0]} intensity={0.5} castShadow={false} />
+        </>
+    )
 }
