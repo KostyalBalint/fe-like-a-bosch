@@ -1,9 +1,6 @@
 import React from 'react'
-import { Vector2 } from 'three'
 import { Car } from './objects/Car/Car'
-import { ObjectData, Prediction } from '../../pages/DatasetSelectionPage'
-import { Vector2, Vector3 } from 'three'
-import { Ferrari } from './objects/Car/Ferrari'
+import { Prediction } from '../../pages/DatasetSelectionPage'
 
 interface EgoParams {
     heading: number
