@@ -24,7 +24,10 @@ export interface AvoidanceData {
 }
 
 export interface SimulationResult {
-    ego: ObjectDataWithPrediction
+    ego: {
+        speed: number
+        heading: number
+    }
     objects: ObjectDataWithPrediction[]
     scenarioType: ScenarioType | null
     avoidanceData: AvoidanceData
@@ -50,7 +53,7 @@ export const SimulationPage = (props: SimulationPageProps) => {
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentSimulationStep((step) => (step + 1) % props.values.length)
-        }, 3000)
+        }, 30)
         return () => {
             clearInterval(interval)
         }

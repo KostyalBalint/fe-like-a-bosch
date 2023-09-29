@@ -1,4 +1,5 @@
 export function parseCSV(csvString: string, delimiter = ',') {
+    console.log(csvString)
     const lines = csvString.trim().split('\n')
 
     if (lines.length < 2) throw new Error('Invalid CSV string')
