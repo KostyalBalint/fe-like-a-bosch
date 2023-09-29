@@ -77,7 +77,12 @@ export const Pedestrian = ({ movementState = PedestrianMovementState.Idle, color
     return (
         <>
             {scene && (
-                <group onClick={props.onClick} position={[props.x, 0, props.y]} rotation={[0, ((props.heading + 90) * Math.PI) / 180, 0]}>
+                <group
+                    onClick={props.onClick}
+                    position={[props.x, 0, props.y]}
+                    rotation={[0, ((props.heading + 90) * Math.PI) / 180, 0]}
+                    scale={[1, 0.5, 1]}
+                >
                     <primitive object={scene} />
                 </group>
             )}

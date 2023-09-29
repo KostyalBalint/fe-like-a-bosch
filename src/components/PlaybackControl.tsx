@@ -71,7 +71,7 @@ export function PlaybackControl({ onTogglePlayback, onSpeedChange, value, isPlay
             <Typography mr={2} color="primary">
                 {(value / 100).toFixed(2)}s
             </Typography>
-            <LinearProgress sx={{ width: '100%' }} value={(value / total) * 100} variant="buffer" valueBuffer={50} />
+            <LinearProgress sx={{ width: '100%' }} value={(value / total) * 100} variant="determinate" />
         </Stack>
     )
 }

@@ -1,4 +1,4 @@
-import React, { ReactElement, Suspense } from 'react'
+import React, { ReactElement, Suspense, useMemo } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { BasePlane } from './BasePlane'
 import { Lights } from './Lights'
@@ -23,6 +23,8 @@ interface View3DProps {
 
 export function View3D(props: View3DProps): ReactElement {
     const sceneRef = React.useRef<Scene>(new Scene())
+
+    const camera = useMemo(() => <PerspectiveCamera far={100} position={new Vector3(0, 2, 0)} makeDefault />, [])
 
     const forwardPressed = useKeyboardControls<KeyboardsControls>((state) => state.forward)
     const backwardPressed = useKeyboardControls<KeyboardsControls>((state) => state.back)
@@ -66,7 +68,7 @@ export function View3D(props: View3DProps): ReactElement {
 
                     <BasePlane />
 
-                    <PerspectiveCamera far={100} position={new Vector3(0, 2, 0)} makeDefault />
+                    {camera}
                     <OrbitControls enableDamping dampingFactor={0.1} maxPolarAngle={(80 / 180) * Math.PI} minDistance={5} maxDistance={40} />
                 </scene>
             </Suspense>

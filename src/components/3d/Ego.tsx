@@ -13,9 +13,9 @@ export function Ego(props: EgoParams) {
         <Ferrari
             color="#04e0e0"
             position={new Vector3(props.objectData.position.x, 0, props.objectData.position.y)}
-            heading={props.objectData.velocity.angle() - Math.PI / 2}
+            heading={props.objectData.velocity.angle() + Math.PI / 2}
             headlights
-            predictions={[new Vector2(0, 0.5), new Vector2(1, 0.5), new Vector2(2, 0.5), new Vector2(3, 0.5)]}
+            predictions={props.predictions}
         />
     )
 }

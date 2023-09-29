@@ -45,14 +45,16 @@ export enum KeyboardsControls {
 export const SimulationPage = (props: SimulationPageProps) => {
     const [currentSimulationStep, setCurrentSimulationStep] = useState(0)
 
+    const currentSimulationStepData = props.values[currentSimulationStep]
+
     useEffect(() => {
         const interval = setInterval(() => {
-            //setCurrentSimulationStep((step) => step + 1)
-        }, 100)
+            setCurrentSimulationStep((step) => (step + 1) % props.values.length)
+        }, 3000)
         return () => {
             clearInterval(interval)
         }
-    }, [])
+    }, [props.values.length])
 
     const map = useMemo<KeyboardControlsEntry<KeyboardsControls>[]>(
         () => [
@@ -71,12 +73,8 @@ export const SimulationPage = (props: SimulationPageProps) => {
                     config={{
                         showPredictions: true,
                     }}
-                    ego={{
-                        position: new Vector2(-2, -2),
-                        velocity: new Vector2(-1, 0),
-                        id: 0,
-                    }}
-                    objects={[]}
+                    ego={currentSimulationStepData.ego}
+                    objects={currentSimulationStepData.objects}
                 />
             </KeyboardControls>
             <PlaybackControl
