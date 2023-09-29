@@ -12,6 +12,7 @@ import { useFrame } from '@react-three/fiber'
 import { getCarMaterials } from './getCarMaterials'
 
 interface CarProps {
+    carRef?: React.MutableRefObject<any>
     position: Vector3
     heading: number
     leftIndicator?: boolean
@@ -61,7 +62,7 @@ export function Ferrari({ color = 'gray', opacity = 1, ...props }: CarProps) {
     const { nodes, materials } = useGLTF('/assets/ferrari.glb')
     return (
         <group>
-            <group dispose={null} rotation={[0, props.heading, 0]} position={props.position}>
+            <group dispose={null} rotation={[0, props.heading, 0]} position={props.position} ref={props.carRef}>
                 <group rotation={[0, Math.PI, 0]} position={[0, 0, 1.33]} scale={[0.98, 0.98, 0.98]}>
                     <group position={[0, 0.676, 0]} rotation={[-Math.PI / 2, 0, -Math.PI / 2]}>
                         <mesh geometry={nodes.trim.geometry} material={materials.Leather_red} position={[-0.379, -0.004, -0.016]} />
