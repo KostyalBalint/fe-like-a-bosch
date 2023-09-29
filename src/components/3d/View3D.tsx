@@ -1,4 +1,4 @@
-import React, { createRef, ReactElement, Suspense } from 'react'
+import React, { createRef, ReactElement, Suspense, useEffect } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { BasePlane } from './BasePlane'
 import { Lights } from './Lights'
@@ -9,7 +9,8 @@ import { ObjectDataWithPrediction, Prediction } from '../../pages/DatasetSelecti
 import { UnknownObject } from './objects/UnknownObject'
 import { OrbitControls as OrbitControlsImpl } from 'three-stdlib/controls/OrbitControls'
 import { Path3D } from './Path3D'
-import { ACESFilmicToneMapping, Vector2 } from 'three'
+import { ACESFilmicToneMapping, Vector2, Vector3 } from 'three'
+import { OrthographicCamera as OrthographicCameraImpl } from 'three/src/cameras/OrthographicCamera'
 
 interface View3DConfig {
     showPredictions: boolean
@@ -60,8 +61,18 @@ export function View3D(props: View3DProps): ReactElement {
     )
 }
 
+const aspect = 16 / 9
+const frustumSize = 10
+
 const MyScene = (props: View3DProps & { isTopDownView?: boolean }) => {
     const orbitControlRef = createRef<OrbitControlsImpl>()
+    const cameraRef = createRef<OrthographicCameraImpl>()
+
+    useEffect(() => {
+        cameraRef.current?.lookAt(10, 0, 0)
+        cameraRef?.current?.rotateOnWorldAxis(new Vector3(0, 1, 0), -1.23918377)
+        cameraRef.current?.updateProjectionMatrix()
+    }, [cameraRef])
 
     //const sceneRef = React.useRef<Scene>()
     //const cameraRef = React.useRef<PerspectiveCameraImpl>()
@@ -90,15 +101,16 @@ const MyScene = (props: View3DProps & { isTopDownView?: boolean }) => {
 
                 {props.isTopDownView && (
                     <OrthographicCamera
+                        ref={cameraRef}
                         makeDefault
-                        position={[0, 10, 0]}
+                        position={[10, 10, 0]}
                         zoom={10}
                         near={0.1}
                         far={100}
-                        left={-10}
-                        right={10}
-                        top={10}
-                        bottom={-10}
+                        left={(0.5 * frustumSize * aspect) / -2}
+                        right={(0.5 * frustumSize * aspect) / 2}
+                        top={frustumSize / 2}
+                        bottom={frustumSize / -2}
                     />
                 )}
 
