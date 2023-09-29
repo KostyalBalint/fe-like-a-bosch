@@ -39,7 +39,7 @@ interface BasePlaneProps {
 
 export function BasePlane(props: BasePlaneProps) {
     const { position } = useSpring({
-        position: [-props.carPosition.x, 0, -props.carPosition.y],
+        position: [-props.carPosition.x, 0, props.carPosition.y],
     })
 
     return (

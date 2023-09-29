@@ -27,7 +27,7 @@ export function Tesla(props: TeslaProps) {
 
     const yawRate = props.yawRate || 0
     const speed = props.speed || 0
-    const wheelRadius = 0.2
+    const wheelRadius = 0.09
 
     useFrame((state, delta, frame) => {
         if (!props.isPlaying) return
