@@ -2,7 +2,7 @@ import { Stack } from '@mui/material'
 import React, { useEffect, useMemo, useState } from 'react'
 import { Vector2 } from 'three'
 import { View3D } from '../components/3d/View3D'
-import { ObjectDataWithPrediction } from './DatasetSelectionPage'
+import { ObjectDataWithPrediction, Prediction } from './DatasetSelectionPage'
 import { PlaybackControl } from '../components/PlaybackControl'
 import { KeyboardControls, KeyboardControlsEntry } from '@react-three/drei'
 
@@ -28,6 +28,7 @@ export interface SimulationResult {
         speed: number
         heading: number
         yawRate: number
+        predictions: Prediction[]
     }
     objects: ObjectDataWithPrediction[]
     scenarioType: ScenarioType | null

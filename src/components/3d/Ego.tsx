@@ -1,12 +1,15 @@
 import React from 'react'
 import { Vector2 } from 'three'
 import { Car } from './objects/Car/Car'
+import { ObjectData, Prediction } from '../../pages/DatasetSelectionPage'
+import { Vector2, Vector3 } from 'three'
+import { Ferrari } from './objects/Car/Ferrari'
 
 interface EgoParams {
     heading: number
-    predictions?: Vector2[]
     yawRate?: number
     speed?: number
+    predictions?: Prediction[]
     isPlaying: boolean
 }
 
@@ -26,7 +29,7 @@ export function Ego(props: EgoParams) {
             y={0}
             heading={props.heading + Math.PI / 2}
             headlights
-            predictions={props.predictions}
+            predictions={props.predictions?.map((p) => p.position)}
             speed={props.speed}
             yawRate={props.yawRate}
             isPlaying={props.isPlaying}

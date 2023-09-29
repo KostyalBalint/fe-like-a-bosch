@@ -10,6 +10,7 @@ import { customArrow } from '../../helpers/customArrow'
 import { volumetricSpotlightMaterial } from '../../helpers/VolumetricMaterial'
 import { useFrame } from '@react-three/fiber'
 import { getCarMaterials } from './getCarMaterials'
+import { Path3D } from '../../Path3D'
 
 interface CarProps {
     carRef?: React.MutableRefObject<any>
@@ -25,7 +26,7 @@ interface CarProps {
     isPlaying: boolean
 }
 
-export function Ferrari({ color = 'gray', opacity = 1, isPlaying, ...props }: CarProps) {
+export function Ferrari({ color = 'gray', opacity = 1, isPlaying, predictions, ...props }: CarProps) {
     const speed = 0.5
 
     const wheel_fl = useRef<any>()
@@ -63,6 +64,7 @@ export function Ferrari({ color = 'gray', opacity = 1, isPlaying, ...props }: Ca
     const { nodes, materials } = useGLTF('/assets/ferrari.glb')
     return (
         <group>
+            <Path3D path={predictions ?? []} pathHeight={1} />
             <group dispose={null} rotation={[0, props.heading, 0]} position={props.position} ref={props.carRef}>
                 <group rotation={[0, Math.PI, 0]} position={[0, 0, 1.33]} scale={[0.98, 0.98, 0.98]}>
                     <group position={[0, 0.676, 0]} rotation={[-Math.PI / 2, 0, -Math.PI / 2]}>
