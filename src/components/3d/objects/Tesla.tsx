@@ -14,7 +14,7 @@ export function Tesla(props: TeslaProps) {
     const { nodes, materials } = useGLTF('/assets/tesla.glb')
 
     const bodyMaterial = new MeshPhysicalMaterial({
-        color: '#212121',
+        color: 'white',
         metalness: 1.0,
         roughness: 0.5,
         clearcoat: 1.0,
