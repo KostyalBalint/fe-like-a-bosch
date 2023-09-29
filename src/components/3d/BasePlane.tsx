@@ -1,9 +1,9 @@
 import { Html } from '@react-three/drei'
-import React, { createRef, useMemo } from 'react'
+import React, { createRef, useEffect, useMemo, useState } from 'react'
 import { DoubleSide, GridHelper, Object3D, Vector2, Vector3 } from 'three'
 import { customArrow } from './helpers/customArrow'
 import { Paper } from '@mui/material'
-import { useFrame } from '@react-three/fiber'
+import { useSpring, animated, useSpringValue } from '@react-spring/three'
 
 const ToolTip = (props: { position: Vector3; text: string }) => {
     return (
@@ -38,9 +38,17 @@ interface BasePlaneProps {
 }
 
 export function BasePlane(props: BasePlaneProps) {
+    const { position } = useSpring({
+        position: [-props.carPosition.x, 0, -props.carPosition.y],
+    })
+
     return (
-        <gridHelper position={[-props.carPosition.x, 0, -props.carPosition.y]} args={[5000, 5000]}>
-            <meshBasicMaterial color="#666666" side={DoubleSide} />
-        </gridHelper>
+        // @ts-ignore
+        <animated.mesh position={position}>
+            <meshPhongMaterial color="royalblue" />
+            <gridHelper args={[5000, 5000]}>
+                <meshBasicMaterial color="#666666" side={DoubleSide} />
+            </gridHelper>
+        </animated.mesh>
     )
 }
