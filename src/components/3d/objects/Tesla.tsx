@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import { useGLTF } from '@react-three/drei'
-import { MeshPhysicalMaterial } from 'three'
+import { Color, MeshPhongMaterial, MeshPhysicalMaterial } from 'three'
 import { useFrame } from '@react-three/fiber'
 
 interface TeslaProps {
@@ -16,10 +16,9 @@ export function Tesla(props: TeslaProps) {
     const bodyMaterial = new MeshPhysicalMaterial({
         color: 'white',
         metalness: 1.0,
-        roughness: 0.5,
+        roughness: 0.05,
         clearcoat: 1.0,
         clearcoatRoughness: 0.03,
-        sheen: 0.5,
     })
 
     const wheel_fl = useRef<any>()
