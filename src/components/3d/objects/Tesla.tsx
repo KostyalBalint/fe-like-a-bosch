@@ -13,12 +13,8 @@ export function Tesla(props: TeslaProps) {
     // @ts-ignore
     const { nodes, materials } = useGLTF('/assets/tesla.glb')
 
-    const bodyMaterial = new MeshPhysicalMaterial({
-        color: 'white',
-        metalness: 1.0,
-        roughness: 0.05,
-        clearcoat: 1.0,
-        clearcoatRoughness: 0.03,
+    const bodyMaterial = new MeshPhongMaterial({
+        color: '#050505',
     })
 
     const wheel_fl = useRef<any>()
