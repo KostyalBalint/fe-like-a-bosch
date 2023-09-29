@@ -12,9 +12,8 @@ export const Path3D = (props: Path3DParams) => {
         props.path.map((p) => new Vector3(p.x, props.pathHeight, p.y)),
         false
     )
-
-    //const geometry = new BufferGeometry().setFromPoints(points)
     const tubeGeometry = new TubeGeometry(curve, 100, props.radius, 10, props.closed)
+    tubeGeometry.scale(1, 0.05, 1)
     return (
         <mesh>
             <primitive object={tubeGeometry} attach="geometry" />

@@ -4,6 +4,7 @@ import { View3D } from '../components/3d/View3D'
 import { ObjectDataWithPrediction, Prediction } from './DatasetSelectionPage'
 import { PlaybackControl } from '../components/PlaybackControl'
 import { KeyboardControls, KeyboardControlsEntry } from '@react-three/drei'
+import { Vector2 } from 'three'
 
 export enum ScenarioType {
     CPNCO = 'CPNCO',
@@ -24,6 +25,7 @@ export interface AvoidanceData {
 
 export interface SimulationResult {
     ego: {
+        position: Vector2
         speed: number
         heading: number
         yawRate: number

@@ -19,6 +19,7 @@ interface View3DConfig {
 
 interface View3DProps {
     ego: {
+        position: Vector2
         speed: number
         heading: number
         yawRate: number
@@ -100,25 +101,27 @@ const MyScene = (props: View3DProps & { isTopDownView?: boolean }) => {
                     return (
                         <group key={object.id}>
                             <UnknownObject x={object.position.x} y={object.position.y} color="white" />
-                            <Path3D path={object.predictions.map((p) => p.position)} pathHeight={0} radius={0.1} />
+                            <Path3D path={object.predictions.map((p) => p.position)} pathHeight={0.1} radius={0.2} />
                         </group>
                     )
                 })}
 
-                <Ego heading={props.ego.heading} speed={props.ego.speed} yawRate={props.ego.yawRate} isPlaying={props.isPlaying} />
-
-                <BasePlane
-                    velocity={
-                        props.isPlaying ? new Vector2(props.ego.speed, 0).rotateAround(new Vector2(0, 0), -props.ego.heading) : new Vector2(0, 0)
-                    }
+                <Ego
+                    predictions={props.ego.predictions}
+                    heading={props.ego.heading}
+                    speed={props.ego.speed}
+                    yawRate={props.ego.yawRate}
+                    isPlaying={props.isPlaying}
                 />
+
+                <BasePlane carPosition={props.ego.position} />
 
                 {props.isTopDownView && (
                     <OrthographicCamera
                         ref={cameraRef}
                         makeDefault
                         position={[10, 10, 0]}
-                        zoom={10}
+                        zoom={8}
                         near={0.1}
                         far={200}
                         left={(0.5 * frustumSize * aspect) / -2}

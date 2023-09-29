@@ -32,7 +32,7 @@ export function PlaybackControl({ onTogglePlayback, onSpeedChange, value, isPlay
     }, [onTogglePlayback])
 
     return (
-        <Stack id="playback-control" direction="row" p={1} className="border-t border-gray-800 items-center bg-gray-900 pr-6">
+        <Stack id="playback-control" direction="row" p={1} className="border-t border-gray-800 items-center bg-gray-900">
             <Button startIcon={<SlowMotionVideoIcon />} id="speed-selector" size="small" variant="text" color="primary" {...bindTrigger(popupState)}>
                 {speed}x
             </Button>
@@ -85,6 +85,7 @@ export function PlaybackControl({ onTogglePlayback, onSpeedChange, value, isPlay
                 max={total - 1}
                 onChange={(_, value) => onChange(value as number)}
                 sx={{
+                    marginRight: 2,
                     color: 'primary.main',
                     height: 4,
                     '& .MuiSlider-thumb': {

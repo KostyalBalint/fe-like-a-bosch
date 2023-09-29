@@ -98,6 +98,7 @@ export const DatasetSelectionPage = ({ onSelect }: { onSelect(results: Simulatio
         })
         const simulation = new SimulationEngine(new CollisionAvoidanceSimulation())
         const result = simulation.run(convertedData)
+        console.log(result)
         onSelect(result)
     }
 

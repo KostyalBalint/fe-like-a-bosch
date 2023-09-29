@@ -34,19 +34,12 @@ const AxesHelper = (props: { length: number; thickness: number; arrowPos: Vector
 }
 
 interface BasePlaneProps {
-    velocity?: Vector2
+    carPosition: Vector2
 }
 
 export function BasePlane(props: BasePlaneProps) {
-    const ref = createRef<GridHelper>()
-    useFrame((state, delta, frame) => {
-        if (ref?.current) {
-            ref.current.position.x -= delta * (props.velocity?.x ?? 0)
-            ref.current.position.z -= delta * (props.velocity?.y ?? 0)
-        }
-    })
     return (
-        <gridHelper ref={ref} args={[5000, 5000]}>
+        <gridHelper position={[-props.carPosition.x, 0, -props.carPosition.y]} args={[5000, 5000]}>
             <meshBasicMaterial color="#666666" side={DoubleSide} />
         </gridHelper>
     )
