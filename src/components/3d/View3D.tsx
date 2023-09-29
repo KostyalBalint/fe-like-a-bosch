@@ -1,17 +1,15 @@
 import React, { createRef, ReactElement, Suspense } from 'react'
-import { Canvas, useThree } from '@react-three/fiber'
+import { Canvas } from '@react-three/fiber'
 import { BasePlane } from './BasePlane'
 import { Lights } from './Lights'
-import { OrbitControls, PerspectiveCamera } from '@react-three/drei'
+import { OrbitControls, OrthographicCamera, PerspectiveCamera } from '@react-three/drei'
 import { Ego } from './Ego'
 import { Perf } from 'r3f-perf'
 import { ObjectDataWithPrediction, Prediction } from '../../pages/DatasetSelectionPage'
 import { UnknownObject } from './objects/UnknownObject'
-import { PerspectiveCamera as PerspectiveCameraImpl } from 'three/src/cameras/PerspectiveCamera'
 import { OrbitControls as OrbitControlsImpl } from 'three-stdlib/controls/OrbitControls'
 import { Path3D } from './Path3D'
-import { Paper } from '@mui/material'
-import { ACESFilmicToneMapping, OrthographicCamera, Scene, Vector2 } from 'three'
+import { ACESFilmicToneMapping, Vector2 } from 'three'
 
 interface View3DConfig {
     showPredictions: boolean
@@ -27,11 +25,9 @@ interface View3DProps {
     objects: ObjectDataWithPrediction[]
     config: View3DConfig
     isPlaying: boolean
-    sceneRef?: any
 }
 
 export function View3D(props: View3DProps): ReactElement {
-    const sceneRef = React.createRef<Scene>()
     return (
         <div className="h-full relative">
             <Canvas
@@ -44,9 +40,9 @@ export function View3D(props: View3DProps): ReactElement {
                     pixelRatio: window.devicePixelRatio,
                 }}
             >
-                <MyScene {...props} sceneRef={sceneRef} />
+                <MyScene {...props} />
             </Canvas>
-            <div className="absolute right-0 top-0 w-[20vw] aspect-video">
+            <div className="absolute right-0 top-0 w-[30vw] aspect-video bg-gray-900">
                 <Canvas
                     style={{ height: '100%', width: '100%' }}
                     gl={{
@@ -57,35 +53,22 @@ export function View3D(props: View3DProps): ReactElement {
                         pixelRatio: window.devicePixelRatio,
                     }}
                 >
-                    <TopDownView originalScene={sceneRef.current} />
+                    <MyScene {...props} isTopDownView />
                 </Canvas>
             </div>
         </div>
     )
 }
 
-const TopDownView = (props: { originalScene: Scene | null }) => {
-    const camera2 = new OrthographicCamera(60, 2, 0.1)
-    camera2.position.set(40, 10, 30)
-    camera2.lookAt(0, 5, 0)
-
-    useThree(({ gl }) => {
-        if (!props.originalScene) return
-        gl.render(props.originalScene, camera2)
-    })
-
-    return <></>
-}
-
-const MyScene = (props: View3DProps) => {
-    const cameraRef = createRef<PerspectiveCameraImpl>()
+const MyScene = (props: View3DProps & { isTopDownView?: boolean }) => {
     const orbitControlRef = createRef<OrbitControlsImpl>()
+
+    //const sceneRef = React.useRef<Scene>()
+    //const cameraRef = React.useRef<PerspectiveCameraImpl>()
 
     return (
         <Suspense fallback={null}>
-            <scene ref={props.sceneRef}>
-                <Perf position="top-left" className="absolute" />
-
+            <scene>
                 <Lights />
 
                 {props.objects.map((object) => {
@@ -105,8 +88,29 @@ const MyScene = (props: View3DProps) => {
                     }
                 />
 
-                <PerspectiveCamera ref={cameraRef} far={100} makeDefault />
+                {props.isTopDownView && (
+                    <OrthographicCamera
+                        makeDefault
+                        position={[0, 10, 0]}
+                        zoom={10}
+                        near={0.1}
+                        far={100}
+                        left={-10}
+                        right={10}
+                        top={10}
+                        bottom={-10}
+                    />
+                )}
+
+                {!props.isTopDownView && (
+                    <>
+                        <PerspectiveCamera far={100} makeDefault />
+                        <Perf position="top-left" className="absolute" />
+                    </>
+                )}
+
                 <OrbitControls
+                    enabled={!props.isTopDownView}
                     ref={orbitControlRef}
                     enableDamping
                     dampingFactor={0.1}
