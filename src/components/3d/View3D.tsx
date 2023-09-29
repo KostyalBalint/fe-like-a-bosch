@@ -56,8 +56,8 @@ const MyScene = (props: View3DProps) => {
     const [fakeCamera, setFakeCamera] = useState<PerspectiveCameraImpl>()
 
     useEffect(() => {
-        setFakeCamera(cameraRef.current?.clone())
-    }, [cameraRef.current])
+        setFakeCamera((prev) => prev ?? cameraRef.current?.clone())
+    }, [cameraRef])
 
     const controls = useMemo(
         () => (
@@ -71,7 +71,7 @@ const MyScene = (props: View3DProps) => {
                 maxDistance={40}
             />
         ),
-        [orbitControlRef]
+        [orbitControlRef, fakeCamera]
     )
 
     useFrame(() => {
@@ -80,7 +80,7 @@ const MyScene = (props: View3DProps) => {
             //cameraRef.current?.updateProjectionMatrix()
 
             //const polarAngle = orbitControlRef.current?.getPolarAngle()
-            //yconst azimuthalAngle = orbitControlRef.current?.getAzimuthalAngle()
+            //const azimuthalAngle = orbitControlRef.current?.getAzimuthalAngle()
 
             orbitControlRef.current?.target.set(egoRef.current?.position.x, egoRef.current?.position.y, egoRef.current?.position.z)
 
