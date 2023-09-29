@@ -6,27 +6,27 @@ import { ObjectDataWithPrediction } from './DatasetSelectionPage'
 import { PlaybackControl } from '../components/PlaybackControl'
 import { KeyboardControls, KeyboardControlsEntry } from '@react-three/drei'
 
-enum ScenarioType {
+export enum ScenarioType {
     CPNCO = 'CPNCO',
     CPTA = 'CPTA',
     CPLA = 'CPLA',
 }
 
-enum Signal {
+export enum Signal {
     HORN = 'HORN',
     HEADLIGHT_FLASH = 'HEADLIGHT_FLASH',
 }
 
-interface AvoidanceData {
-    signal: Signal
+export interface AvoidanceData {
+    signal: Signal | null
     brakeDistance: number
     decelerationNeeded: number
 }
 
-interface SimulationResult {
+export interface SimulationResult {
     ego: ObjectDataWithPrediction
     objects: ObjectDataWithPrediction[]
-    scenarioType: ScenarioType
+    scenarioType: ScenarioType | null
     avoidanceData: AvoidanceData
     timestamp: number
 }
