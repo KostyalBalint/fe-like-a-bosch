@@ -2,9 +2,9 @@ import { Button, Stack, Typography } from '@mui/material'
 import { Vector2 } from 'three'
 import { SimulationEngine } from '../simulation/SimulationEngine'
 import { CollisionAvoidanceSimulation } from '../simulation/collision-avoidance/CollisionAvoidanceSimulation'
-import { SimulationResult } from './SimulationPage'
 import React from 'react'
 import { parseCSV } from '../utils/parseCSV'
+import { SimulationResult } from './SimulationPage'
 
 export interface CSVData {
     timestamp: number

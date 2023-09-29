@@ -1,6 +1,6 @@
 import { Simulation } from '../SimulationEngine'
 import { SimulationResult } from '../../pages/SimulationPage'
-import { CSVData } from '../../pages/DatasetSelectionPage'
+import { CSVData, ObjectData } from '../../pages/DatasetSelectionPage'
 import { AvoidanceCalculator } from './AvoidanceCalculator'
 import { ScenarioRecognizer } from './ScenarioRecognizer'
 import { PredictionEngine } from './PredictionEngine'
@@ -24,10 +24,10 @@ export class CollisionAvoidanceSimulation implements Simulation {
 
     runSimulationStep(step: number): SimulationResult {
         // 1. Filter objects
-        const filteredObjects = this.filter.filterObjects(this.dataset[step].objects)
+        //const filteredObjects = this.filter.filterObjects(this.dataset[step].objects)
 
         // 2. Predict objects
-        const objectsWithPredictions = this.predictionEngine.predictAll(filteredObjects)
+        const objectsWithPredictions = this.predictionEngine.predictAll(this.dataset[step].objects)
 
         // 3. Recognize scenario
         const scenarioType = this.scenarioRecognizer.recognizeScenario(objectsWithPredictions)
