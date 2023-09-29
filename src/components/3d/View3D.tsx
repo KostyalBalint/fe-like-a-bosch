@@ -3,13 +3,15 @@ import { Canvas } from '@react-three/fiber'
 import { BasePlane } from './BasePlane'
 import { Lights } from './Lights'
 import { Controls } from './Controls'
-import { ACESFilmicToneMapping, Scene, Vector3 } from 'three'
+import { ACESFilmicToneMapping, Scene, Vector2, Vector3 } from 'three'
 import { Environment, Sky, useKeyboardControls } from '@react-three/drei'
 import { Ego } from './Ego'
 import { Perf } from 'r3f-perf'
 import { ObjectData } from '../../pages/DatasetSelectionPage'
 import { Pedestrian, PedestrianMovementState } from './objects/Pedestrian'
 import { KeyboardsControls } from '../../pages/SimulationPage'
+import { Ferrari } from './objects/Car/Ferrari'
+import { PredictionsViewer } from './objects/PredictionsViewer'
 
 interface View3DConfig {
     showPredictions: boolean
@@ -58,6 +60,8 @@ export function View3D(props: View3DProps): ReactElement {
                             : PedestrianMovementState.Walking
                     }
                 />
+
+                <PredictionsViewer predictions={[new Vector2(0, 0.5), new Vector2(1, 0.5), new Vector2(2, 1), new Vector2(3, 0.5)]} />
 
                 <Ego objectData={props.ego} />
 
