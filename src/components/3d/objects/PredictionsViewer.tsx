@@ -38,7 +38,6 @@ export const PredictionsViewer = ({ tempStart = new Object3D(), ...props }: Pred
             tempStart.lookAt(arrow.end)
             tempStart.updateMatrix()
             instancedMeshRef.current.setMatrixAt(i, tempStart.matrix)
-            console.log(tempStart.matrix)
         })
         // Update the instance
         instancedMeshRef.current.instanceMatrix.needsUpdate = true

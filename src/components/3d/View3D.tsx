@@ -41,7 +41,7 @@ export function View3D(props: View3DProps): ReactElement {
 }
 
 const MyScene = (props: View3DProps) => {
-    const sceneRef = React.useRef<Scene>(new Scene())
+    const sceneRef = React.createRef<Scene>()
 
     const forwardPressed = useKeyboardControls<KeyboardsControls>((state) => state.forward)
     const backwardPressed = useKeyboardControls<KeyboardsControls>((state) => state.back)
@@ -49,47 +49,6 @@ const MyScene = (props: View3DProps) => {
     const egoRef = useRef<Object3D>()
     const cameraRef = createRef<PerspectiveCameraImpl>()
     const orbitControlRef = createRef<OrbitControlsImpl>()
-
-    //<PerspectiveCamera ref={cameraRef} far={100} position={new Vector3(0, 2, 0)} lookAt={() => egoRef.current?.position} makeDefault />
-    const camera = useMemo(() => <PerspectiveCamera ref={cameraRef} far={100} position={new Vector3(0, 2, 0)} makeDefault />, [cameraRef])
-    //const fakeCamera = useMemo(() => cameraRef?.current?.clone(), [cameraRef.current])
-    const [fakeCamera, setFakeCamera] = useState<PerspectiveCameraImpl>()
-
-    useEffect(() => {
-        setFakeCamera((prev) => prev ?? cameraRef.current?.clone())
-    }, [cameraRef])
-
-    const controls = useMemo(
-        () => (
-            <OrbitControls
-                ref={orbitControlRef}
-                camera={fakeCamera}
-                enableDamping
-                dampingFactor={0.1}
-                maxPolarAngle={(80 / 180) * Math.PI}
-                minDistance={5}
-                maxDistance={40}
-            />
-        ),
-        [orbitControlRef, fakeCamera]
-    )
-
-    useFrame(() => {
-        if (egoRef.current?.position) {
-            //cameraRef.current?.lookAt(egoRef.current?.position)
-            //cameraRef.current?.updateProjectionMatrix()
-
-            //const polarAngle = orbitControlRef.current?.getPolarAngle()
-            //const azimuthalAngle = orbitControlRef.current?.getAzimuthalAngle()
-
-            orbitControlRef.current?.target.set(egoRef.current?.position.x, egoRef.current?.position.y, egoRef.current?.position.z)
-
-            orbitControlRef.current?.update()
-        }
-        if (fakeCamera) {
-            cameraRef.current?.copy(fakeCamera)
-        }
-    })
 
     return (
         <Suspense fallback={null}>
@@ -118,10 +77,17 @@ const MyScene = (props: View3DProps) => {
 
                 <Ego objectData={props.ego} carRef={egoRef} />
 
-                <BasePlane />
+                <BasePlane velocity={props.ego.velocity} />
 
-                {camera}
-                {controls}
+                <PerspectiveCamera ref={cameraRef} far={100} makeDefault />
+                <OrbitControls
+                    ref={orbitControlRef}
+                    enableDamping
+                    dampingFactor={0.1}
+                    maxPolarAngle={(80 / 180) * Math.PI}
+                    minDistance={5}
+                    maxDistance={40}
+                />
             </scene>
         </Suspense>
     )

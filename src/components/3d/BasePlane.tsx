@@ -1,8 +1,9 @@
 import { Html } from '@react-three/drei'
-import React, { useMemo } from 'react'
-import { DoubleSide, Vector3 } from 'three'
+import React, { createRef, useMemo } from 'react'
+import { DoubleSide, GridHelper, Object3D, Vector2, Vector3 } from 'three'
 import { customArrow } from './helpers/customArrow'
 import { Paper } from '@mui/material'
+import { useFrame } from '@react-three/fiber'
 
 const ToolTip = (props: { position: Vector3; text: string }) => {
     return (
@@ -32,11 +33,21 @@ const AxesHelper = (props: { length: number; thickness: number; arrowPos: Vector
     )
 }
 
-export function BasePlane() {
-    console.log('BasePlane')
+interface BasePlaneProps {
+    velocity?: Vector2
+}
+
+export function BasePlane(props: BasePlaneProps) {
+    const ref = createRef<GridHelper>()
+    useFrame((state, delta, frame) => {
+        if (ref?.current) {
+            ref.current.position.x -= delta * (props.velocity?.x ?? 0)
+            ref.current.position.z -= delta * (props.velocity?.y ?? 0)
+        }
+    })
     return (
         <>
-            <gridHelper args={[5000, 5000]} position={[0, 0, 0]}>
+            <gridHelper ref={ref} args={[5000, 5000]}>
                 <meshBasicMaterial color="gray" side={DoubleSide} />
             </gridHelper>
             <AxesHelper length={3} thickness={0.02} arrowPos={new Vector3(0, 0, 0)} />
