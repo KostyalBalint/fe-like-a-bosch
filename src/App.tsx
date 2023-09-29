@@ -5,9 +5,9 @@ import { CSVData, DatasetSelectionPage } from './pages/DatasetSelectionPage'
 function App() {
     const [dataset, setDataset] = useState<SimulationResult[]>([])
 
-    if (dataset && dataset.length === 0) {
+    /*if (dataset && dataset.length === 0) {
         return <DatasetSelectionPage onSelect={setDataset} />
-    }
+    }*/
 
     return <SimulationPage values={dataset} />
 }

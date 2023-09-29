@@ -1,16 +1,14 @@
-import React, { ReactElement } from 'react'
+import React, { ReactElement, Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { BasePlane } from './BasePlane'
 import { Lights } from './Lights'
-import { Controls } from './Controls'
 import { ACESFilmicToneMapping, Scene, Vector2, Vector3 } from 'three'
-import { Environment, Sky, useKeyboardControls } from '@react-three/drei'
+import { Environment, OrbitControls, PerspectiveCamera, Sky, useKeyboardControls } from '@react-three/drei'
 import { Ego } from './Ego'
 import { Perf } from 'r3f-perf'
 import { ObjectData } from '../../pages/DatasetSelectionPage'
 import { Pedestrian, PedestrianMovementState } from './objects/Pedestrian'
 import { KeyboardsControls } from '../../pages/SimulationPage'
-import { Ferrari } from './objects/Car/Ferrari'
 import { PredictionsViewer } from './objects/PredictionsViewer'
 
 interface View3DConfig {
@@ -40,34 +38,38 @@ export function View3D(props: View3DProps): ReactElement {
                 pixelRatio: window.devicePixelRatio,
             }}
         >
-            <scene ref={sceneRef}>
-                <Perf position="top-left" />
-                <Sky sunPosition={[7, 5, 1]} />
+            <Suspense fallback={null}>
+                <scene ref={sceneRef}>
+                    <Perf position="top-left" />
+                    <Sky sunPosition={[7, 5, 1]} />
 
-                <Environment files="assets/venice_sunset_1k.hdr" path="/" />
+                    <Environment files="assets/venice_sunset_1k.hdr" path="/" />
 
-                <Lights />
+                    <Lights />
 
-                <Pedestrian
-                    x={0}
-                    y={0}
-                    heading={0}
-                    movementState={
-                        forwardPressed
-                            ? PedestrianMovementState.Running
-                            : backwardPressed
-                            ? PedestrianMovementState.Idle
-                            : PedestrianMovementState.Walking
-                    }
-                />
+                    <Pedestrian
+                        x={0}
+                        y={0}
+                        heading={0}
+                        movementState={
+                            forwardPressed
+                                ? PedestrianMovementState.Running
+                                : backwardPressed
+                                ? PedestrianMovementState.Idle
+                                : PedestrianMovementState.Walking
+                        }
+                    />
 
-                <PredictionsViewer predictions={[new Vector2(0, 0.5), new Vector2(1, 0.5), new Vector2(2, 1), new Vector2(3, 0.5)]} />
+                    <PredictionsViewer predictions={[new Vector2(0, 0.5), new Vector2(1, 0.5), new Vector2(2, 1), new Vector2(3, 0.5)]} />
 
-                <Ego objectData={props.ego} />
+                    <Ego objectData={props.ego} />
 
-                <BasePlane />
-                <Controls cameraLookAt={new Vector3(props.ego.position.x, 0, props.ego.position.y)} />
-            </scene>
+                    <BasePlane />
+
+                    <PerspectiveCamera far={100} position={new Vector3(0, 2, 0)} makeDefault />
+                    <OrbitControls enableDamping dampingFactor={0.1} maxPolarAngle={(80 / 180) * Math.PI} minDistance={5} maxDistance={40} />
+                </scene>
+            </Suspense>
         </Canvas>
     )
 }
