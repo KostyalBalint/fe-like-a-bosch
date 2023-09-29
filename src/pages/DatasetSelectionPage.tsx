@@ -114,10 +114,7 @@ export const DatasetSelectionPage = ({ onSelect }: { onSelect(results: Simulatio
 
             <div className="flex flex-col w-1/2 flex-shrink-0 h-full gap-8">
                 <div className="flex flex-col gap-4">
-                    <img
-                        className="h-16 mr-auto object-contain"
-                        src="https://www.citypng.com/public/uploads/small/116633732990dcj4cswv0jiicwul5xzjnvml3waurboyegegp7bmmporysdglbhnlughzn95ktlbgnla4tthuv2ghxmqqkclmwiuoxfjxdoa59n.png"
-                    />
+                    <img className="h-16 mr-auto object-contain" src="/logo.png" />
                     <div>
                         <h1 className="text-6xl font-bold text-white inline">
                             Welcome to{' '}

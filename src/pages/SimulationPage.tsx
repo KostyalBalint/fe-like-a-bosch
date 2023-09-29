@@ -1,6 +1,5 @@
-import { Stack } from '@mui/material'
+import { AppBar, Stack } from '@mui/material'
 import React, { useEffect, useMemo, useState } from 'react'
-import { Vector2 } from 'three'
 import { View3D } from '../components/3d/View3D'
 import { ObjectDataWithPrediction, Prediction } from './DatasetSelectionPage'
 import { PlaybackControl } from '../components/PlaybackControl'
@@ -76,6 +75,11 @@ export const SimulationPage = (props: SimulationPageProps) => {
 
     return (
         <Stack height="100vh" className="bg-[#262628]">
+            <AppBar position="static" elevation={0}>
+                <div className="flex items-center justify-between h-16 px-4 bg-gray-900 border-gray-800 border-b">
+                    <img src="/logo.png" alt="logo" className="h-8" />
+                </div>
+            </AppBar>
             <KeyboardControls map={map}>
                 <View3D
                     config={{
@@ -90,6 +94,7 @@ export const SimulationPage = (props: SimulationPageProps) => {
                 timestamp={currentSimulationStepData.timestamp - props.values[0].timestamp}
                 value={currentSimulationStep}
                 onTogglePlayback={() => setIsPlaying((isPlaying) => !isPlaying)}
+                onChange={(value) => setCurrentSimulationStep(value)}
                 speed={speed}
                 onSpeedChange={setSpeed}
                 isPlaying={isPlaying}

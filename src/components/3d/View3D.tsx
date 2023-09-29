@@ -2,7 +2,6 @@ import React, { createRef, ReactElement, Suspense } from 'react'
 import { Canvas, useThree } from '@react-three/fiber'
 import { BasePlane } from './BasePlane'
 import { Lights } from './Lights'
-import { ACESFilmicToneMapping, Color, OrthographicCamera, Scene, Vector2, WebGLRenderer } from 'three'
 import { OrbitControls, PerspectiveCamera } from '@react-three/drei'
 import { Ego } from './Ego'
 import { Perf } from 'r3f-perf'
@@ -12,6 +11,7 @@ import { PerspectiveCamera as PerspectiveCameraImpl } from 'three/src/cameras/Pe
 import { OrbitControls as OrbitControlsImpl } from 'three-stdlib/controls/OrbitControls'
 import { Path3D } from './Path3D'
 import { Paper } from '@mui/material'
+import { ACESFilmicToneMapping, OrthographicCamera, Scene, Vector2 } from 'three'
 
 interface View3DConfig {
     showPredictions: boolean
@@ -33,9 +33,9 @@ interface View3DProps {
 export function View3D(props: View3DProps): ReactElement {
     const sceneRef = React.createRef<Scene>()
     return (
-        <div>
+        <div className="h-full relative">
             <Canvas
-                style={{ height: '100%', width: '100%' }}
+                style={{ height: '100%', width: '100%', position: 'relative' }}
                 gl={{
                     antialias: true,
                     outputColorSpace: 'srgb',
@@ -46,7 +46,7 @@ export function View3D(props: View3DProps): ReactElement {
             >
                 <MyScene {...props} sceneRef={sceneRef} />
             </Canvas>
-            <Paper sx={{ position: 'absolute', width: '20wv', aspectRatio: '16/9' }}>
+            <div className="absolute right-0 top-0 w-[20vw] aspect-video">
                 <Canvas
                     style={{ height: '100%', width: '100%' }}
                     gl={{
@@ -59,7 +59,7 @@ export function View3D(props: View3DProps): ReactElement {
                 >
                     <TopDownView originalScene={sceneRef.current} />
                 </Canvas>
-            </Paper>
+            </div>
         </div>
     )
 }
@@ -83,8 +83,8 @@ const MyScene = (props: View3DProps) => {
 
     return (
         <Suspense fallback={null}>
-            <scene ref={props.sceneRef} background={new Color('black')}>
-                <Perf position="top-left" />
+            <scene ref={props.sceneRef}>
+                <Perf position="top-left" className="absolute" />
 
                 <Lights />
 
