@@ -22,9 +22,10 @@ interface CarProps {
     opacity?: number
     showSensors?: boolean
     predictions?: Vector2[]
+    isPlaying: boolean
 }
 
-export function Ferrari({ color = 'gray', opacity = 1, ...props }: CarProps) {
+export function Ferrari({ color = 'gray', opacity = 1, isPlaying, ...props }: CarProps) {
     const speed = 0.5
 
     const wheel_fl = useRef<any>()
@@ -36,7 +37,7 @@ export function Ferrari({ color = 'gray', opacity = 1, ...props }: CarProps) {
 
     useFrame((state, delta, frame) => {
         wheels.forEach((wheel) => {
-            wheel.current.rotation.x -= delta * speed * Math.PI * 2
+            wheel.current.rotation.x -= isPlaying ? delta * speed * Math.PI * 2 : 0
         })
     })
 

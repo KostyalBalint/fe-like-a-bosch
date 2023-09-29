@@ -46,11 +46,8 @@ export function BasePlane(props: BasePlaneProps) {
         }
     })
     return (
-        <>
-            <gridHelper ref={ref} args={[5000, 5000]}>
-                <meshBasicMaterial color="gray" side={DoubleSide} />
-            </gridHelper>
-            <AxesHelper length={3} thickness={0.02} arrowPos={new Vector3(0, 0, 0)} />
-        </>
+        <gridHelper ref={ref} args={[5000, 5000]}>
+            <meshBasicMaterial color="#666666" side={DoubleSide} />
+        </gridHelper>
     )
 }

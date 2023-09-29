@@ -2,15 +2,16 @@ import React, { createRef, ReactElement, Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { BasePlane } from './BasePlane'
 import { Lights } from './Lights'
-import { ACESFilmicToneMapping, Scene, Vector2 } from 'three'
+import { ACESFilmicToneMapping, Color, Scene, Vector2 } from 'three'
 import { Environment, OrbitControls, PerspectiveCamera, Sky } from '@react-three/drei'
 import { Ego } from './Ego'
 import { Perf } from 'r3f-perf'
-import { ObjectData } from '../../pages/DatasetSelectionPage'
+import { ObjectData, ObjectDataWithPrediction } from '../../pages/DatasetSelectionPage'
 import { UnknownObject } from './objects/UnknownObject'
 import { PerspectiveCamera as PerspectiveCameraImpl } from 'three/src/cameras/PerspectiveCamera'
 import { OrbitControls as OrbitControlsImpl } from 'three-stdlib/controls/OrbitControls'
 import { Path3D } from './Path3D'
+import { Truck } from './objects/Truck'
 
 interface View3DConfig {
     showPredictions: boolean
@@ -21,8 +22,9 @@ interface View3DProps {
         speed: number
         heading: number
     }
-    objects: ObjectData[]
+    objects: ObjectDataWithPrediction[]
     config: View3DConfig
+    isPlaying: boolean
 }
 
 export function View3D(props: View3DProps): ReactElement {
@@ -60,23 +62,27 @@ const MyScene = (props: View3DProps) => {
 
     return (
         <Suspense fallback={null}>
-            <scene ref={sceneRef}>
+            <scene ref={sceneRef} background={new Color('black')}>
                 <Perf position="top-left" />
-                <Sky sunPosition={[7, 5, 1]} />
-
-                <Environment files="assets/venice_sunset_1k.hdr" path="/" />
 
                 <Lights />
 
                 {props.objects.map((object) => {
-                    return <UnknownObject key={object.id} x={object.position.x} y={object.position.y} />
+                    return (
+                        <group key={object.id}>
+                            <UnknownObject x={object.position.x} y={object.position.y} />
+                            <Path3D path={object.predictions.map((p) => p.position)} pathHeight={0.5} radius={0.1} />
+                        </group>
+                    )
                 })}
 
-                <Ego heading={props.ego.heading} />
+                <Ego heading={props.ego.heading} isPlaying={props.isPlaying} />
 
-                <BasePlane velocity={new Vector2(props.ego.speed, 0).rotateAround(new Vector2(0, 0), -props.ego.heading)} />
-
-                <Path3D path={path} pathHeight={0.5} radius={0.1} closed />
+                <BasePlane
+                    velocity={
+                        props.isPlaying ? new Vector2(props.ego.speed, 0).rotateAround(new Vector2(0, 0), -props.ego.heading) : new Vector2(0, 0)
+                    }
+                />
 
                 <PerspectiveCamera ref={cameraRef} far={100} makeDefault />
                 <OrbitControls

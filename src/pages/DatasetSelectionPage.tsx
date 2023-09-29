@@ -64,7 +64,7 @@ type RawDataRow = {
 
 export const DatasetSelectionPage = ({ onSelect }: { onSelect(results: SimulationResult[]): void }) => {
     async function handleSelect(name: string) {
-        const response = await fetch('dataset.csv')
+        const response = await fetch(name)
         const data = await response.text()
         const csv: RawDataRow[] = parseCSV(data)
         const convertedData = csv.map((row): CSVData => {
@@ -102,25 +102,45 @@ export const DatasetSelectionPage = ({ onSelect }: { onSelect(results: Simulatio
     }
 
     return (
-        <div className="w-screen h-screen bg-black flex flex-col items-center pt-16 gap-12">
-            <div>
-                <h1 className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-pink-500 inline">
-                    Welcome to CrashCraft!
-                </h1>
-            </div>
-            <p className="text-white text-lg">Start by selecting a dataset for the simulation.</p>
-
-            <div className="flex flex-col gap-4 max-w-md w-full">
-                <span className="uppercase font-bold text-white">Use existing</span>
-                <DatasetButton onClick={() => handleSelect('dataset1.csv')}>Dataset1.csv</DatasetButton>
+        <div className="w-screen h-screen bg-black flex items-center p-16 gap-24">
+            <div className="rounded-2xl shadow-2xl h-full relative group z-0">
+                <div className="absolute inset-2 group-hover:inset-1 bg-gradient-to-r from-blue-600 to-pink-500 blur-lg -z-10" />
+                <img
+                    className="h-full w-full object-cover rounded-2xl"
+                    src="https://s3files.core77.com/blog/images/lead_n_spotlight/409890_title__47195_83vwKms7e.jpg"
+                    alt=""
+                />
             </div>
 
-            <div className="flex flex-col max-w-md w-full gap-8">
-                <span className="uppercase font-bold text-white">Use existing</span>
-                <button className="rounded-lg w-fulltext-white relative z-10 flex group">
-                    <div className="absolute inset-2 group-hover:inset-1 bg-gradient-to-r from-blue-600 to-pink-500 blur-xl -z-10" />
-                    <div className="bg-black px-24 py-8 w-full h-full rounded-2xl">Upload your own</div>
-                </button>
+            <div className="flex flex-col w-1/2 flex-shrink-0 h-full gap-8">
+                <div className="flex flex-col gap-4">
+                    <img
+                        className="h-16 mr-auto object-contain"
+                        src="https://www.citypng.com/public/uploads/small/116633732990dcj4cswv0jiicwul5xzjnvml3waurboyegegp7bmmporysdglbhnlughzn95ktlbgnla4tthuv2ghxmqqkclmwiuoxfjxdoa59n.png"
+                    />
+                    <div>
+                        <h1 className="text-6xl font-bold text-white inline">
+                            Welcome to{' '}
+                            <span className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-pink-500 inline">
+                                CrashCraft!
+                            </span>
+                        </h1>
+                    </div>
+                    <p className="text-white text-lg">Start by selecting a dataset for the simulation.</p>
+                </div>
+
+                <div className="flex flex-col gap-4 max-w-md w-full">
+                    <span className="uppercase font-bold text-white">Use existing</span>
+                    <DatasetButton onClick={() => handleSelect('dataset.csv')}>dataset.csv</DatasetButton>
+                </div>
+
+                <div className="flex flex-col max-w-md w-full gap-8">
+                    <span className="uppercase font-bold text-white">Use existing</span>
+                    <button className="rounded-lg w-fulltext-white relative z-10 flex group">
+                        <div className="absolute inset-2 group-hover:inset-1 bg-gradient-to-r from-blue-600 to-pink-500 blur-xl -z-10" />
+                        <div className="bg-black px-24 py-8 w-full h-full rounded-2xl">Upload your own</div>
+                    </button>
+                </div>
             </div>
         </div>
     )

@@ -47,17 +47,20 @@ export enum KeyboardsControls {
 
 export const SimulationPage = (props: SimulationPageProps) => {
     const [currentSimulationStep, setCurrentSimulationStep] = useState(0)
+    const [isPlaying, setIsPlaying] = useState(true)
+    const [speed, setSpeed] = useState(1)
 
     const currentSimulationStepData = props.values[currentSimulationStep]
 
     useEffect(() => {
         const interval = setInterval(() => {
+            if (!isPlaying) return
             setCurrentSimulationStep((step) => (step + 1) % props.values.length)
-        }, 30)
+        }, 100 / speed)
         return () => {
             clearInterval(interval)
         }
-    }, [props.values.length])
+    }, [props.values.length, isPlaying, speed])
 
     const map = useMemo<KeyboardControlsEntry<KeyboardsControls>[]>(
         () => [
@@ -70,22 +73,24 @@ export const SimulationPage = (props: SimulationPageProps) => {
     )
 
     return (
-        <Stack height="100vh">
+        <Stack height="100vh" className="bg-[#262628]">
             <KeyboardControls map={map}>
                 <View3D
                     config={{
                         showPredictions: true,
                     }}
+                    isPlaying={isPlaying}
                     ego={currentSimulationStepData.ego}
                     objects={currentSimulationStepData.objects}
                 />
             </KeyboardControls>
             <PlaybackControl
+                timestamp={currentSimulationStepData.timestamp - props.values[0].timestamp}
                 value={currentSimulationStep}
-                onTogglePlayback={() => {}}
-                speed={1}
-                onSpeedChange={() => {}}
-                isPlaying
+                onTogglePlayback={() => setIsPlaying((isPlaying) => !isPlaying)}
+                speed={speed}
+                onSpeedChange={setSpeed}
+                isPlaying={isPlaying}
                 total={props.values.length}
             />
         </Stack>
