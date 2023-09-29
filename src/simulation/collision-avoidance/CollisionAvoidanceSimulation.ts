@@ -43,6 +43,7 @@ export class CollisionAvoidanceSimulation implements Simulation {
             ego: {
                 speed: this.dataset[step].vehicleSpeed,
                 heading: this.heading,
+                yawRate: this.dataset[step].yawRate,
             },
             objects: objectsWithPredictions,
             avoidanceData,

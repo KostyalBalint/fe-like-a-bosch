@@ -27,6 +27,7 @@ export interface SimulationResult {
     ego: {
         speed: number
         heading: number
+        yawRate: number
     }
     objects: ObjectDataWithPrediction[]
     scenarioType: ScenarioType | null

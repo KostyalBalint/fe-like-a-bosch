@@ -1,15 +1,13 @@
-import { Color, ColorRepresentation, Group, Object3D, Vector2, Vector3 } from 'three'
-import React, { useEffect, useMemo, useState } from 'react'
-import { setMaterials } from './setCarMaterials'
-import { useFrame } from '@react-three/fiber'
-import { useGLTF } from '@react-three/drei'
-import { getCarSensors } from './getCarSensors'
+import { Color, Vector2, Vector3 } from 'three'
+import React from 'react'
 import { volumetricSpotlightMaterial } from '../../helpers/VolumetricMaterial'
-import { customArrow } from '../../helpers/customArrow'
+import { Tesla } from '../Tesla'
 
 interface CarProps {
     x: number
     y: number
+    yawRate?: number
+    speed?: number
     heading: number
     leftIndicator?: boolean
     rightIndicator?: boolean
@@ -18,64 +16,10 @@ interface CarProps {
     opacity?: number
     showSensors?: boolean
     predictions?: Vector2[]
+    isPlaying: boolean
 }
 
-const predictionsToArrows = (predictions: Vector2[] | undefined, currentPos: Vector3, posYOffset: number, color: ColorRepresentation): Group[] => {
-    if (!predictions) return []
-
-    const start = new Vector2(currentPos.x, currentPos.z)
-    const poses = [start, ...predictions]
-    let arrows = []
-
-    for (let i = 1; i < poses.length; i++) {
-        const start = new Vector3(poses[i - 1].x, posYOffset, poses[i - 1].y)
-        const end = new Vector3(poses[i].x, posYOffset, poses[i].y)
-        const arrow = customArrow(start, end, 0.02, color)
-        arrows.push(arrow)
-    }
-    return arrows
-}
-
-export const Car = ({ color = 'gray', opacity = 1, ...props }: CarProps) => {
-    const [model, setModel] = useState<Object3D>()
-    const [wheels, setWheels] = useState<Object3D[]>([])
-    //const [fixRotation, setFixRotation] = useState(90);
-
-    const rawModel = useGLTF('assets/ferrari.glb', true)
-
-    const sensors = useMemo(() => getCarSensors(), [])
-
-    const speed = 0.5
-
-    useEffect(() => {
-        const carModel = rawModel.scene.children[0]
-
-        if (!carModel) {
-            console.error('No car model found')
-            return
-        }
-        setMaterials(carModel, color, opacity)
-
-        const wheelList = [
-            carModel.getObjectByName('wheel_fl'),
-            carModel.getObjectByName('wheel_fr'),
-            carModel.getObjectByName('wheel_rl'),
-            carModel.getObjectByName('wheel_rr'),
-        ]
-        setWheels(wheelList.filter((a) => a) as Object3D[])
-        setModel(carModel)
-        //setFixRotation(0);
-    }, [rawModel, color, opacity])
-
-    useFrame((state, delta, frame) => {
-        wheels.forEach((wheel) => {
-            wheel.rotation.x -= delta * speed * Math.PI * 2
-        })
-    })
-
-    /* eslint-disable react-hooks/exhaustive-deps */
-    const predictionArrows = useMemo(() => predictionsToArrows(props.predictions, new Vector3(props.x, 0, props.y), 1.5, 'red'), [props.predictions])
-
+export const Car = ({ color = 'gray', opacity = 1, isPlaying, ...props }: CarProps) => {
     const spotLightPositions: {
         position: [number, number, number]
     }[] = [
@@ -95,46 +39,28 @@ export const Car = ({ color = 'gray', opacity = 1, ...props }: CarProps) => {
     })
 
     return (
-        <>
-            {model && (
-                <>
-                    <group position={[props.x, 0, props.y]} rotation={[0, props.heading, 0]}>
-                        <group rotation={[0, Math.PI / 2, 0]}>
-                            <group rotation={[0, Math.PI, 0]} position={[0, 0, 1.33]} scale={[0.98, 0.98, 0.98]}>
-                                <primitive object={model} />
-                            </group>
-                            {props.showSensors &&
-                                sensors.map((sensor) => (
-                                    <>
-                                        <primitive object={sensor.camera} key={sensor.camera.uuid} />
-                                        <primitive object={sensor.helper} key={sensor.helper.uuid} />
-                                    </>
-                                ))}
-                            {props.headlights && (
-                                <>
-                                    {spotLightPositions.map(({ position }, i) => {
-                                        const angle = i % 2 === 0 ? Math.PI / 16 : -Math.PI / 16
-                                        return (
-                                            <group key={position.join(',')} rotation={[-Math.PI / 2, 0, angle]} position={position}>
-                                                <mesh position={[0, -2.5, 0]}>
-                                                    {/* @ts-ignore */}
-                                                    <coneGeometry args={[1.8, 5, 32]} openEnded />
-                                                    <primitive object={headLightMaterial} />
-                                                </mesh>
-                                            </group>
-                                        )
-                                    })}
-                                </>
-                            )}
-                        </group>
-                    </group>
-                    <group rotation={[0, 0, 0]}>
-                        {predictionArrows.map((arrow) => (
-                            <primitive key={`${arrow.position.x}${arrow.position.z}`} object={arrow} />
-                        ))}
-                    </group>
-                </>
-            )}
-        </>
+        <group position={[props.x, 0, props.y]} rotation={[0, props.heading - Math.PI / 2, 0]}>
+            <group rotation={[0, Math.PI / 2, 0]}>
+                <group rotation={[0, 0, 0]} position={[0, 0, 1.7]} scale={[0.6, 0.6, 0.6]}>
+                    <Tesla yawRate={props.yawRate} speed={props.speed} isPlaying={isPlaying} />
+                </group>
+                {props.headlights && (
+                    <>
+                        {spotLightPositions.map(({ position }, i) => {
+                            const angle = i % 2 === 0 ? Math.PI / 16 : -Math.PI / 16
+                            return (
+                                <group key={position.join(',')} rotation={[-Math.PI / 2, 0, angle]} position={position}>
+                                    <mesh position={[0, -2.5, 0]}>
+                                        {/* @ts-ignore */}
+                                        <coneGeometry args={[1.8, 5, 32]} openEnded />
+                                        <primitive object={headLightMaterial} />
+                                    </mesh>
+                                </group>
+                            )
+                        })}
+                    </>
+                )}
+            </group>
+        </group>
     )
 }
