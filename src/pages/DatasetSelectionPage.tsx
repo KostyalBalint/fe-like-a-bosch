@@ -27,7 +27,8 @@ export interface ObjectDataWithPrediction extends ObjectData {
 
 export const DatasetSelectionPage = ({ onSelect }: { onSelect(results: SimulationResult[]): void }) => {
     async function handleSelect(name: string) {
-        const csv = parseCSV('a,b,c\n1,2,3')
+        //const csv = parseCSV('a,b,c\n1,2,3')
+        const csv: CSVData[] = [{ timestamp: 0, objects: [] }]
         const simulation = new SimulationEngine(new CollisionAvoidanceSimulation())
         const result = simulation.run(csv)
         onSelect(result)
