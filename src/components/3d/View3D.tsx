@@ -1,8 +1,8 @@
-import React, { createRef, ReactElement, Suspense, useEffect, useMemo, useRef, useState } from 'react'
-import { Canvas, useFrame, useThree } from '@react-three/fiber'
+import React, { createRef, ReactElement, Suspense } from 'react'
+import { Canvas } from '@react-three/fiber'
 import { BasePlane } from './BasePlane'
 import { Lights } from './Lights'
-import { ACESFilmicToneMapping, Object3D, Scene, Vector2, Vector3 } from 'three'
+import { ACESFilmicToneMapping, Scene, Vector2 } from 'three'
 import { Environment, OrbitControls, PerspectiveCamera, Sky } from '@react-three/drei'
 import { Ego } from './Ego'
 import { Perf } from 'r3f-perf'
@@ -10,6 +10,7 @@ import { ObjectData } from '../../pages/DatasetSelectionPage'
 import { UnknownObject } from './objects/UnknownObject'
 import { PerspectiveCamera as PerspectiveCameraImpl } from 'three/src/cameras/PerspectiveCamera'
 import { OrbitControls as OrbitControlsImpl } from 'three-stdlib/controls/OrbitControls'
+import { Path3D } from './Path3D'
 
 interface View3DConfig {
     showPredictions: boolean
@@ -41,6 +42,16 @@ export function View3D(props: View3DProps): ReactElement {
     )
 }
 
+const num_points = 100
+const radius = 3
+
+const path: Vector2[] = Array.from({ length: 100 }).map((_, i) => {
+    const theta = (i * (2 * Math.PI)) / num_points
+    const x = radius * Math.cos(theta)
+    const y = radius * Math.sin(theta)
+    return new Vector2(x, y)
+})
+
 const MyScene = (props: View3DProps) => {
     const sceneRef = React.createRef<Scene>()
 
@@ -64,6 +75,8 @@ const MyScene = (props: View3DProps) => {
                 <Ego heading={props.ego.heading} />
 
                 <BasePlane velocity={new Vector2(props.ego.speed, 0).rotateAround(new Vector2(0, 0), -props.ego.heading)} />
+
+                <Path3D path={path} pathHeight={0.5} radius={0.1} closed />
 
                 <PerspectiveCamera ref={cameraRef} far={100} makeDefault />
                 <OrbitControls
