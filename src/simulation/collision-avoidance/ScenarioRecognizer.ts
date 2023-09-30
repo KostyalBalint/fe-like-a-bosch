@@ -10,11 +10,13 @@ export interface ScenarioTypeChecker {
     check(ego: EgoData, intersectedObject: IntersectedObject): boolean
 }
 
+const WARNING_DISTANCE = 15
+
 export class ScenarioRecognizer {
     checkers: ScenarioTypeChecker[] = [new CPLA(), new CPTA(), new CPNCO()]
 
     recognizeScenario(ego: EgoData, intersectedObject: IntersectedObject): ScenarioType | null {
-        if (intersectedObject.object.position.length() > 15) {
+        if (intersectedObject.object.position.length() > WARNING_DISTANCE) {
             return null
         }
 

@@ -6,7 +6,7 @@ const MAX_JERK = -30
 const MAX_DECELERATION = -9
 const LIGHT_THRESHOLD = 1.6
 const HORN_THRESHOLD = 1.85
-
+const T_LATENCY = 0.1
 export class AvoidanceCalculator {
     calculateAvoidanceData(ego: ObjectDataWithPrediction, intersectedObject: IntersectedObject | null): AvoidanceData {
         let decelerationNeeded = 0
@@ -28,6 +28,7 @@ export class AvoidanceCalculator {
     }
 
     calculateBreakDistance(aEgo: number, vEgo: number) {
+        const d1 = vEgo * T_LATENCY + (aEgo * T_LATENCY ** 2) / 2
         const t2 = (MAX_DECELERATION - aEgo) / MAX_JERK
         const dv1 = (MAX_JERK / 2) * t2 ** 2 + aEgo * t2
         const v1 = vEgo + dv1
@@ -35,7 +36,7 @@ export class AvoidanceCalculator {
         const dv2 = -v1
         const t3 = dv2 / MAX_DECELERATION
         const d3 = (MAX_DECELERATION / 2) * t3 ** 2 + v1 * t3
-        return d2 + d3
+        return d1 + d2 + d3
     }
 
     calculateDistance(predictions: Vector2[], intersectedObject: Vector2) {

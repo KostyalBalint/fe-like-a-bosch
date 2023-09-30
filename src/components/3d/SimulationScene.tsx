@@ -54,7 +54,7 @@ export const SimulationScene = (props: View3DProps & { isTopDownView?: boolean }
                     if (selectedObject === object.id) color = '#0054b6'
 
                     return (
-                        <group key={object.id} onClick={() => setSelectedObject(object.id)}>
+                        <group scale={[1, 1, -1]} key={object.id} onClick={() => setSelectedObject(object.id)}>
                             <UnknownObject x={object.position.x} y={object.position.y} color={color} />
                             {props.config.showPredictions && (
                                 <Path3D path={object.predictions.map((p) => p.position)} pathHeight={0.1} radius={0.2} />
@@ -62,20 +62,22 @@ export const SimulationScene = (props: View3DProps & { isTopDownView?: boolean }
                         </group>
                     )
                 })}
-                {props.collidingObject && props.config.showIntersections && (
-                    <UnknownObject x={props.collidingObject.intersection.x} y={props.collidingObject.intersection.y} color="green" />
-                )}
-                <Ego
-                    predictions={props.ego.predictions}
-                    heading={props.ego.heading}
-                    speed={props.ego.speed}
-                    yawRate={props.ego.yawRate}
-                    isPlaying={props.isPlaying}
-                    brakeDistance={props.avoidanceData.brakeDistance}
-                    config={props.config}
-                    headlights={props.avoidanceData.signal === Signal.HEADLIGHT_FLASH}
-                />
-                {!props.isTopDownView && <BasePlane carPosition={props.ego.position} />}
+                <group scale={[1, 1, -1]}>
+                    {props.collidingObject && props.config.showIntersections && (
+                        <UnknownObject x={props.collidingObject.intersection.x} y={props.collidingObject.intersection.y} color="green" />
+                    )}
+                    <Ego
+                        predictions={props.ego.predictions}
+                        heading={props.ego.heading}
+                        speed={props.ego.speed}
+                        yawRate={props.ego.yawRate}
+                        isPlaying={props.isPlaying}
+                        brakeDistance={props.avoidanceData.brakeDistance}
+                        config={props.config}
+                        headlights={props.avoidanceData.signal === Signal.HEADLIGHT_FLASH}
+                    />
+                    {!props.isTopDownView && <BasePlane carPosition={props.ego.position} />}
+                </group>
                 {props.isTopDownView && (
                     <OrthographicCamera
                         ref={orthoCameraRef}

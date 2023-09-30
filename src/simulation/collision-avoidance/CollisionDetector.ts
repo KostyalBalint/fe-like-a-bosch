@@ -1,6 +1,9 @@
 import { Vector2 } from 'three'
 import { ObjectDataWithPrediction } from '../../pages/dataset-selection/types'
 
+const MAX_DISTANCE = 15
+const CAR_WIDTH = 1.8
+
 export type IntersectedObject = {
     intersection: Vector2
     object: ObjectDataWithPrediction
@@ -18,9 +21,18 @@ export class CollisionDetector {
             }))
             .filter((i) => i.intersection !== null) as IntersectedObject[]
 
-        if (intersections.length === 0) return null
-        intersections.sort((a, b) => a.object.position.x ** 2 + a.object.position.y ** 2 - b.object.position.x ** 2 - b.object.position.y ** 2)
-        return intersections[0]
+        const runOnInteractions = objects
+            .map((object) => ({
+                object,
+                intersection: this.identifyRunOn(ego.velocity, object.position),
+            }))
+            .filter((i) => i.intersection !== null) as IntersectedObject[]
+
+        const allColisionList = intersections.concat(...runOnInteractions)
+
+        if (allColisionList.length === 0) return null
+        allColisionList.sort((a, b) => a.object.position.x ** 2 + a.object.position.y ** 2 - b.object.position.x ** 2 - b.object.position.y ** 2)
+        return allColisionList[0]
     }
 
     lineIntersect(a1: Vector2, a2: Vector2, b1: Vector2, b2: Vector2) {
@@ -98,5 +110,42 @@ export class CollisionDetector {
             }
         }
         return null
+    }
+
+    identifyRunOn(egoVelocity: Vector2, objectPosition: Vector2) {
+        const normalizedEgoVelocity = egoVelocity.clone().normalize()
+        const egoEndpoint = normalizedEgoVelocity.multiplyScalar(MAX_DISTANCE)
+        const distance = this.distanceBetweenPointAndLineSegment(objectPosition.x, objectPosition.y, 0, 0, egoEndpoint.x, egoEndpoint.y)
+        console.log(distance)
+        if (distance < CAR_WIDTH / 2) {
+            return objectPosition
+        }
+        return null
+    }
+
+    distanceBetweenPointAndLineSegment(x: number, y: number, x1: number, y1: number, x2: number, y2: number) {
+        const dx = x2 - x1
+        const dy = y2 - y1
+
+        // Calculate the parametric value (t) of the point on the line segment
+        const t = ((x - x1) * dx + (y - y1) * dy) / (dx * dx + dy * dy)
+
+        // Check if the closest point is within the line segment
+        if (t >= 0 && t <= 1) {
+            const x_closest = x1 + t * dx
+            const y_closest = y1 + t * dy
+
+            // Calculate the Euclidean distance between the closest point and the given point
+            const distance = Math.sqrt((x - x_closest) ** 2 + (y - y_closest) ** 2)
+
+            return distance
+        } else {
+            // The closest point is outside the line segment; calculate the distance to the nearest endpoint
+            const distanceToEndpoint1 = Math.sqrt((x - x1) ** 2 + (y - y1) ** 2)
+            const distanceToEndpoint2 = Math.sqrt((x - x2) ** 2 + (y - y2) ** 2)
+
+            // Return the minimum of the distances to the endpoints
+            return Math.min(distanceToEndpoint1, distanceToEndpoint2)
+        }
     }
 }

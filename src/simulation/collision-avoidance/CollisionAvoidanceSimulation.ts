@@ -45,6 +45,11 @@ export class CollisionAvoidanceSimulation implements Simulation {
         this.egoLocation.x += this.dataset[step].vehicleSpeed * Math.cos(this.heading) * dt
         this.egoLocation.y += this.dataset[step].vehicleSpeed * Math.sin(this.heading) * dt
 
+        filteredObjects.map((o) => {
+            o.position.rotateAround(new Vector2(0, 0), -this.heading)
+            o.velocity.add(new Vector2(this.dataset[step].vehicleSpeed, 0))
+            o.velocity.rotateAround(new Vector2(0, 0), -this.heading)
+        })
         const egoVelocity = new Vector2(
             this.dataset[step].vehicleSpeed * Math.cos(this.heading),
             this.dataset[step].vehicleSpeed * Math.sin(this.heading)
