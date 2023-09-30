@@ -1,4 +1,4 @@
-import React, { createRef, ReactElement, Suspense, useEffect, useState } from 'react'
+import React, { createRef, ReactElement, Suspense, useEffect } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { BasePlane } from './BasePlane'
 import { Lights } from './Lights'
@@ -7,12 +7,12 @@ import { Ego } from './Ego'
 import { Perf } from 'r3f-perf'
 import { ObjectDataWithPrediction, Prediction } from '../../pages/DatasetSelectionPage'
 import { UnknownObject } from './objects/UnknownObject'
-import { OrbitControls as OrbitControlsImpl } from 'three-stdlib/controls/OrbitControls'
 import { Path3D } from './Path3D'
 import { ACESFilmicToneMapping, Vector2, Vector3 } from 'three'
 import { OrthographicCamera as OrthographicCameraImpl } from 'three/src/cameras/OrthographicCamera'
 import CameraControlsImpl from 'camera-controls'
 import { IntersectedObject } from '../../simulation/collision-avoidance/CollisionDetector'
+import { AxesHelper } from './helpers/AxesHelper'
 
 interface View3DConfig {
     showPredictions: boolean
