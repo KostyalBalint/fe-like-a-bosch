@@ -1,3 +1,5 @@
+import { animated, useSpring } from '@react-spring/three'
+
 interface UnknownObjectProps {
     x: number
     y: number
@@ -8,10 +10,15 @@ interface UnknownObjectProps {
 }
 
 export const UnknownObject = ({ x, y, z = 0, color = '#4d4d4d', opacity = 1, onClick }: UnknownObjectProps) => {
+    const { position } = useSpring({
+        position: [x, 0.5 + z, y],
+    })
+
     return (
-        <mesh onClick={onClick} position={[x, 0.5 + z, y]} castShadow={true}>
+        // @ts-ignore
+        <animated.mesh onClick={onClick} position={position}>
             <capsuleGeometry args={[0.3, 1, 10, 15]} />
             <meshStandardMaterial color={color} opacity={opacity} transparent={true} />
-        </mesh>
+        </animated.mesh>
     )
 }
