@@ -1,8 +1,9 @@
 import { ObjectDataWithPrediction } from '../../pages/DatasetSelectionPage'
 import { AvoidanceData, ScenarioType } from '../../pages/SimulationPage'
+import { IntersectedObject } from './CollisionDetector'
 
 export class AvoidanceCalculator {
-    calculateAvoidanceData(objects: ObjectDataWithPrediction[], scenarioType: ScenarioType | null): AvoidanceData {
+    calculateAvoidanceData(ego: ObjectDataWithPrediction, intersectedObject: IntersectedObject | null): AvoidanceData {
         return {
             decelerationNeeded: 0,
             brakeDistance: 0,
