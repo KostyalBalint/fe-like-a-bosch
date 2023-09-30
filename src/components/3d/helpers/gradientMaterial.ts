@@ -16,7 +16,7 @@ export const gradientMaterial = new ShaderMaterial({
         },
     },
     vertexShader: `
-            varying vec2 vUv;
+            varying Vector2 vUv;
         
             void main() {
               vUv = uv;
@@ -29,7 +29,7 @@ export const gradientMaterial = new ShaderMaterial({
             uniform float opacity1;
             uniform float opacity2;
           
-            varying vec2 vUv;
+            varying Vector2 vUv;
             
             void main() {
                 //gl_FragColor = vec4(mix(color1, color2, vUv.x), mix(opacity1, opacity2, vUv.x));

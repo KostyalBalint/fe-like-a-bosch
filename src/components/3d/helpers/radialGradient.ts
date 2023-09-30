@@ -16,7 +16,7 @@ export const radialGradientMaterial = new ShaderMaterial({
         },
     },
     vertexShader: `
-            varying vec2 vUv;
+            varying Vector2 vUv;
         
             void main() {
               vUv = uv;
@@ -29,12 +29,12 @@ export const radialGradientMaterial = new ShaderMaterial({
             uniform float opacity1;
             uniform float opacity2;
           
-            varying vec2 vUv;
+            varying Vector2 vUv;
             
-            float dist(vec2 p0, vec2 pf){return sqrt((pf.x-p0.x)*(pf.x-p0.x)+(pf.y-p0.y)*(pf.y-p0.y));}
+            float dist(Vector2 p0, Vector2 pf){return sqrt((pf.x-p0.x)*(pf.x-p0.x)+(pf.y-p0.y)*(pf.y-p0.y));}
             
             void main() {
-                float d = dist(vec2(0.5, 0.5), vUv);
+                float d = dist(Vector2(0.5, 0.5), vUv);
                 float alpha = smoothstep(opacity1, opacity2, clamp(d * 2.0, 0.0, 1.0));
                 
                 gl_FragColor = vec4(mix(color1, color2, d), alpha );

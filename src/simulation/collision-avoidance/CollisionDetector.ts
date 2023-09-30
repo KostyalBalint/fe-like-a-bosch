@@ -1,10 +1,10 @@
 import { ObjectData, ObjectDataWithPrediction, Prediction } from '../../pages/DatasetSelectionPage'
 import { ScenarioType } from '../../pages/SimulationPage'
-import { Vec2 } from 'three'
+import { Vector2 } from 'three'
 import { sqrt } from 'three/examples/jsm/nodes/shadernode/ShaderNodeBaseElements'
 
 export type IntersectedObject = {
-    intersection: Vec2
+    intersection: Vector2
     object: ObjectDataWithPrediction
 }
 
@@ -25,7 +25,7 @@ export class CollisionDetector {
         return intersections[0]
     }
 
-    lineIntersect(a1: Vec2, a2: Vec2, b1: Vec2, b2: Vec2) {
+    lineIntersect(a1: Vector2, a2: Vector2, b1: Vector2, b2: Vector2) {
         const denom = (b2.y - b1.y) * (a2.x - a1.x) - (b2.x - b1.x) * (-a2.y - -a1.y)
         if (denom === 0) {
             return null
@@ -45,7 +45,7 @@ export class CollisionDetector {
 
         return { x, y }
     }
-    findIntersection(objectPredictions: Vec2[], egoPredictions: Vec2[]) {
+    findIntersection(objectPredictions: Vector2[], egoPredictions: Vector2[]) {
         if (objectPredictions.length < 2 || egoPredictions.length < 2) return null
 
         for (let i = 0; i < objectPredictions.length - 1; i++) {
