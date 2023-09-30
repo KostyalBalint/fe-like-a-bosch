@@ -1,7 +1,14 @@
 import classnames from 'classnames'
-import React from 'react'
+import React, { useEffect } from 'react'
 
 export function HornIcon({ active }: { active?: boolean }) {
+    useEffect(() => {
+        if (active) {
+            const audio = new Audio('/horn.mp3')
+            audio.play()
+        }
+    }, [active])
+
     return (
         <svg
             version="1.0"

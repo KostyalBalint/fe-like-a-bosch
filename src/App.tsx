@@ -12,7 +12,7 @@ function App() {
     }
 
     // Otherwise, show the simulation page
-    return <SimulationPage values={dataset} />
+    return <SimulationPage onBack={() => setDataset([])} values={dataset} />
 }
 
 export default App

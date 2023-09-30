@@ -21,7 +21,7 @@ export const SimulationPage = (props: SimulationPageProps) => {
             <Stack height="100vh" width="100vw" className="bg-[#161616]">
                 <Stack height="100%" flexGrow={1} direction="row">
                     <Stack height="100%" width="100%">
-                        <Header config={config} onChange={setConfig} />
+                        <Header onBack={props.onBack} config={config} onChange={setConfig} />
                         <View3D
                             config={config}
                             collidingObject={currentSimulationStepData.collidingObject}

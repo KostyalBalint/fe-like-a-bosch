@@ -6,7 +6,7 @@ import StraightenIcon from '@mui/icons-material/Straighten'
 import CloseIcon from '@mui/icons-material/Close'
 
 import classnames from 'classnames'
-export function Header({ config, onChange }: { config: View3DConfig; onChange: (config: View3DConfig) => void }) {
+export function Header({ config, onChange, onBack }: { config: View3DConfig; onChange: (config: View3DConfig) => void; onBack: () => void }) {
     function togglePredictions() {
         onChange({
             ...config,
@@ -54,6 +54,10 @@ export function Header({ config, onChange }: { config: View3DConfig; onChange: (
                             <StraightenIcon />
                         </IconButton>
                     </Tooltip>
+
+                    <ButtonBase onClick={onBack}>
+                        <span className="text-white rounded p-2 bg-gray-800">Change dataset</span>
+                    </ButtonBase>
                 </div>
             </div>
         </AppBar>
@@ -62,7 +66,7 @@ export function Header({ config, onChange }: { config: View3DConfig; onChange: (
 
 function IconButton({ children, onClick, active }: { children: React.ReactNode; onClick: () => void; active: boolean }) {
     return (
-        <button onClick={onClick} className={classnames('rounded p-2', active ? 'bg-gray-700' : 'bg-gray-800')}>
+        <button onClick={onClick} className={classnames('rounded p-2', active ? 'bg-gray-800' : 'bg-gray-700')}>
             {children}
         </button>
     )

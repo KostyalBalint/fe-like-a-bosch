@@ -83,4 +83,5 @@ export interface SimulationResult {
 
 export type SimulationPageProps = {
     values: SimulationResult[]
+    onBack: () => void
 }
