@@ -1,15 +1,15 @@
 import { Color, ShaderMaterial } from 'three'
 
-export const gradientMaterial = new ShaderMaterial({
+export const radialGradientMaterial = new ShaderMaterial({
     uniforms: {
         color1: {
-            value: new Color('#a9c5fd'),
+            value: new Color('#606060'),
         },
         opacity1: {
-            value: 1,
+            value: 0.4,
         },
         color2: {
-            value: new Color('#a9c5fd'),
+            value: new Color('black'),
         },
         opacity2: {
             value: 0.3,
@@ -31,16 +31,13 @@ export const gradientMaterial = new ShaderMaterial({
           
             varying vec2 vUv;
             
+            float dist(vec2 p0, vec2 pf){return sqrt((pf.x-p0.x)*(pf.x-p0.x)+(pf.y-p0.y)*(pf.y-p0.y));}
+            
             void main() {
-                //gl_FragColor = vec4(mix(color1, color2, vUv.x), mix(opacity1, opacity2, vUv.x));
+                float d = dist(vec2(0.5, 0.5), vUv);
+                float alpha = smoothstep(opacity1, opacity2, clamp(d * 2.0, 0.0, 1.0));
                 
-                // y < 0 = transparent, > 1 = opaque
-                float alpha = smoothstep(opacity1, opacity2, vUv.x);
-            
-                // y < 1 = color1, > 2 = color2
-                float colorMix = smoothstep(0.0, 1.0, vUv.x);
-            
-                gl_FragColor = vec4(mix(color1, color2, colorMix), alpha);
+                gl_FragColor = vec4(mix(color1, color2, d), alpha );
             }
           `,
     transparent: true,

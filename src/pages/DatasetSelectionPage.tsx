@@ -5,6 +5,7 @@ import { CollisionAvoidanceSimulation } from '../simulation/collision-avoidance/
 import React from 'react'
 import { parseCSV } from '../utils/parseCSV'
 import { SimulationResult } from './SimulationPage'
+import { CarShowRoom } from '../components/3d/CarShowRoom'
 
 export interface CSVData {
     timestamp: number
@@ -104,13 +105,11 @@ export const DatasetSelectionPage = ({ onSelect }: { onSelect(results: Simulatio
 
     return (
         <div className="w-screen h-screen bg-black flex items-center p-16 gap-24">
-            <div className="rounded-2xl shadow-2xl h-full relative group z-0">
-                <div className="absolute inset-2 group-hover:inset-1 bg-gradient-to-r from-blue-600 to-pink-500 blur-lg -z-10" />
-                <img
-                    className="h-full w-full object-cover rounded-2xl"
-                    src="https://s3files.core77.com/blog/images/lead_n_spotlight/409890_title__47195_83vwKms7e.jpg"
-                    alt=""
-                />
+            <div className="rounded-2xl shadow-2xl h-full flex-grow relative group z-0">
+                <div className="absolute inset-2 bg-gradient-to-r from-blue-600 to-pink-500 blur-2xl rounded-2xl -z-10" />
+                <div className="h-full w-full object-cover rounded-2xl">
+                    <CarShowRoom />
+                </div>
             </div>
 
             <div className="flex flex-col w-1/2 flex-shrink-0 h-full gap-8">
