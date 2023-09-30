@@ -2,7 +2,7 @@ import React, { createRef, ReactElement, Suspense, useEffect } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { BasePlane } from './BasePlane'
 import { Lights } from './Lights'
-import { CameraControls, OrthographicCamera, PerspectiveCamera } from '@react-three/drei'
+import { CameraControls, Environment, OrthographicCamera, PerspectiveCamera } from '@react-three/drei'
 import { Ego } from './Ego'
 import { Perf } from 'r3f-perf'
 import { ObjectDataWithPrediction, Prediction } from '../../pages/DatasetSelectionPage'
@@ -12,7 +12,7 @@ import { ACESFilmicToneMapping, Vector2, Vector3 } from 'three'
 import { OrthographicCamera as OrthographicCameraImpl } from 'three/src/cameras/OrthographicCamera'
 import CameraControlsImpl from 'camera-controls'
 import { IntersectedObject } from '../../simulation/collision-avoidance/CollisionDetector'
-import { AxesHelper } from './helpers/AxesHelper'
+import { useSelectedObject } from '../../providers/selectedObjectProvider'
 
 interface View3DConfig {
     showPredictions: boolean
@@ -39,9 +39,7 @@ export function View3D(props: View3DProps): ReactElement {
                 style={{ height: '100%', width: '100%', position: 'relative' }}
                 gl={{
                     antialias: true,
-                    outputColorSpace: 'srgb',
                     toneMapping: ACESFilmicToneMapping,
-                    toneMappingExposure: 0.8,
                     pixelRatio: window.devicePixelRatio,
                 }}
             >
@@ -76,6 +74,8 @@ const MyScene = (props: View3DProps & { isTopDownView?: boolean }) => {
 
     const cameraRef = createRef<OrthographicCameraImpl>()
 
+    const { setSelectedObject, selectedObject } = useSelectedObject()
+
     const followFromBack = true
 
     useEffect(() => {
@@ -100,13 +100,13 @@ const MyScene = (props: View3DProps & { isTopDownView?: boolean }) => {
                 <Lights />
 
                 {props.objects.map((object) => {
+                    let color = 'white'
+                    if (props.collidingObject?.object.id === object.id) color = 'red'
+                    if (selectedObject === object.id) color = '#0054b6'
+
                     return (
-                        <group key={object.id}>
-                            <UnknownObject
-                                x={object.position.x}
-                                y={object.position.y}
-                                color={props.collidingObject?.object.id === object.id ? 'red' : 'white'}
-                            />
+                        <group key={object.id} onClick={() => setSelectedObject(object.id)}>
+                            <UnknownObject x={object.position.x} y={object.position.y} color={color} />
                             <Path3D path={object.predictions.map((p) => p.position)} pathHeight={0.1} radius={0.2} />
                         </group>
                     )
@@ -147,8 +147,6 @@ const MyScene = (props: View3DProps & { isTopDownView?: boolean }) => {
                         <Perf position="top-left" className="absolute" />
                     </>
                 )}
-
-                <AxesHelper length={10} thickness={0.1} arrowPos={new Vector3(0, 0, 0)} />
 
                 <CameraControls
                     enabled={!props.isTopDownView}
