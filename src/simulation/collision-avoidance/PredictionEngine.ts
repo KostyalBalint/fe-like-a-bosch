@@ -8,11 +8,6 @@ type ObjectDataWithTimeStamp = {
     timeStamp: number
 }
 
-type EgoDataWithTimeStamp = {
-    velocity: number
-    heading: number
-    timeStamp: number
-}
 export class PredictionEngine {
     private allFilteredObjects: ObjectDataWithTimeStamp[] = []
 

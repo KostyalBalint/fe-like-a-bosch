@@ -10,7 +10,6 @@ export type IntersectedObject = {
 
 export class CollisionDetector {
     findCollision(ego: ObjectDataWithPrediction, objects: ObjectDataWithPrediction[], timestamp: number): IntersectedObject | null {
-        if (timestamp === 65.48331492) console.log(ego, objects)
         const intersections = objects
             .map((object) => ({
                 object,
@@ -58,7 +57,6 @@ export class CollisionDetector {
                 const egoPos1 = egoPredictions[j + 1]
                 const intersection = this.lineIntersect(egoPos0, egoPos1, objectPos0, objectPos1)
                 if (intersection) {
-                    console.log('Found intersection', intersection)
                     return intersection
                 }
             }
