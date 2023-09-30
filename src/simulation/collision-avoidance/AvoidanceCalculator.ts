@@ -8,7 +8,9 @@ const LIGHT_THRESHOLD = 1.6
 const HORN_THRESHOLD = 1.85
 const T_LATENCY = 0.1
 export class AvoidanceCalculator {
-    calculateAvoidanceData(ego: ObjectDataWithPrediction, intersectedObject: IntersectedObject | null): AvoidanceData {
+    egoVelocityHistory: Vector2[] = []
+    timestampHistory: number[] = []
+    calculateAvoidanceData(ego: ObjectDataWithPrediction, intersectedObject: IntersectedObject | null, timestamp: number): AvoidanceData {
         let decelerationNeeded = 0
         let signal = null
         if (intersectedObject) {
@@ -17,8 +19,18 @@ export class AvoidanceCalculator {
             decelerationNeeded = ego.velocity.lengthSq() / (2 * distance)
             signal = this.calculateSignal(decelerationNeeded)
         }
-        const aEgo = 2
-        const breakDistance = this.calculateBreakDistance(aEgo, ego.velocity.length())
+        this.egoVelocityHistory.push(ego.velocity)
+        this.timestampHistory.push(timestamp)
+        let aEgo = 0
+        if (this.egoVelocityHistory.length > 1) {
+            const lastVelocity = this.egoVelocityHistory[this.egoVelocityHistory.length - 1]
+            const secondLastVelocity = this.egoVelocityHistory[this.egoVelocityHistory.length - 2]
+            const lastTimestamp = this.timestampHistory[this.timestampHistory.length - 1]
+            const secondLastTimestamp = this.timestampHistory[this.timestampHistory.length - 2]
+            aEgo = (lastVelocity.lengthSq() - secondLastVelocity.lengthSq()) / (lastTimestamp - secondLastTimestamp)
+        }
+
+        const breakDistance = this.calculateBreakDistance(Math.max(aEgo, -9), ego.velocity.length())
 
         return {
             decelerationNeeded: decelerationNeeded,
@@ -27,6 +39,11 @@ export class AvoidanceCalculator {
         }
     }
 
+    /**
+     * Calculation based on the formulas from the challenge handout
+     * @param aEgo
+     * @param vEgo
+     */
     calculateBreakDistance(aEgo: number, vEgo: number) {
         const d1 = vEgo * T_LATENCY + (aEgo * T_LATENCY ** 2) / 2
         const t2 = (MAX_DECELERATION - aEgo) / MAX_JERK

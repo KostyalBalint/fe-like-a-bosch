@@ -91,7 +91,7 @@ export class CollisionAvoidanceSimulation implements Simulation {
         }
 
         // 5. Calculate avoidance data
-        const avoidanceData = this.avoidanceCalculator.calculateAvoidanceData(egoPrediction, collidingObject)
+        const avoidanceData = this.avoidanceCalculator.calculateAvoidanceData(egoPrediction, collidingObject, this.dataset[step].timestamp)
 
         return {
             timestamp: this.dataset[step].timestamp,
