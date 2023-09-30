@@ -4,7 +4,7 @@ import { IntersectedObject } from './CollisionDetector'
 import { ScenarioTypeChecker } from './ScenarioRecognizer'
 import { EgoData } from './CollisionAvoidanceSimulation'
 
-const ANGLE_THRESHOLD = 5
+const ANGLE_THRESHOLD = 20
 export class CPLA implements ScenarioTypeChecker {
     type = ScenarioType.CPLA
 

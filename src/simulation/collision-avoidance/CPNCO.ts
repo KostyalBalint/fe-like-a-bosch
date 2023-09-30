@@ -4,7 +4,7 @@ import { ObjectDataWithPrediction } from '../../pages/DatasetSelectionPage'
 import { IntersectedObject } from './CollisionDetector'
 import { EgoData } from './CollisionAvoidanceSimulation'
 
-const ANGLE_THRESHOLD = 5
+const ANGLE_THRESHOLD = 30
 export class CPNCO implements ScenarioTypeChecker {
     type = ScenarioType.CPNCO
 
