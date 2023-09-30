@@ -5,7 +5,7 @@ import { PredictionEngine } from './PredictionEngine'
 import { ObjectFilter } from './ObjectFilter'
 import { Vector2 } from 'three'
 import { ScenarioRecognizer } from './ScenarioRecognizer'
-import { CSVData, ObjectData, Prediction, ScenarioType, SimulationResult } from '../../pages/dataset-selection/types'
+import { CSVData, Prediction, SimulationResult } from '../../pages/dataset-selection/types'
 
 export interface EgoData {
     position: Vector2

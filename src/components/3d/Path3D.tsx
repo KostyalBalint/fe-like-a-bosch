@@ -1,4 +1,4 @@
-import { CatmullRomCurve3, Color, ColorRepresentation, TubeGeometry, Vector2, Vector3 } from 'three'
+import { CatmullRomCurve3, Color, TubeGeometry, Vector2, Vector3 } from 'three'
 import { createGradientMaterial } from './helpers/gradientMaterial'
 import { useMemo } from 'react'
 

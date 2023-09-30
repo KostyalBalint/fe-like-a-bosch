@@ -10,7 +10,6 @@ import { Ego } from './Ego'
 import { Signal } from '../../pages/dataset-selection/types'
 import { BasePlane } from './BasePlane'
 import { CameraControls, OrthographicCamera, PerspectiveCamera } from '@react-three/drei'
-import { Perf } from 'r3f-perf'
 import { View3DProps } from './View3D'
 
 const aspect = 16 / 9

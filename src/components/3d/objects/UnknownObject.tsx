@@ -1,5 +1,3 @@
-import { animated, useSpring } from '@react-spring/three'
-
 interface UnknownObjectProps {
     x: number
     y: number

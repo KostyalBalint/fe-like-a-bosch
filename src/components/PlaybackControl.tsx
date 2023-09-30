@@ -1,5 +1,5 @@
 import { bindMenu, bindTrigger, usePopupState } from 'material-ui-popup-state/hooks'
-import { Button, IconButton, LinearProgress, Menu, MenuItem, Slider, Stack, Typography } from '@mui/material'
+import { Button, IconButton, Menu, MenuItem, Slider, Stack, Typography } from '@mui/material'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import PauseIcon from '@mui/icons-material/Pause'
 import React, { useEffect } from 'react'

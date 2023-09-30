@@ -1,6 +1,6 @@
 import React from 'react'
 import { OverviewFlow } from './OverviewFlow'
-import { Button, ButtonBase } from '@mui/material'
+import { ButtonBase } from '@mui/material'
 
 export function EditorPage({ onBack }: { onBack: () => void }) {
     return (

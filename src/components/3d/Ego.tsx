@@ -1,6 +1,5 @@
 import React from 'react'
 import { Car } from './objects/Car/Car'
-import { Vector2 } from 'three'
 import { Prediction } from '../../pages/dataset-selection/types'
 import { View3DConfig } from './View3D'
 

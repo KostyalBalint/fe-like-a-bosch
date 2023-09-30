@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import { useGLTF } from '@react-three/drei'
-import { Color, MeshPhongMaterial, MeshPhysicalMaterial } from 'three'
+import { Color, MeshPhysicalMaterial } from 'three'
 import { useFrame } from '@react-three/fiber'
 
 interface TeslaProps {

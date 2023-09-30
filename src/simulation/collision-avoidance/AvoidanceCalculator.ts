@@ -1,6 +1,6 @@
 import { IntersectedObject } from './CollisionDetector'
 import { Vector2 } from 'three'
-import { AvoidanceData, ObjectDataWithPrediction, ScenarioType, Signal } from '../../pages/dataset-selection/types'
+import { AvoidanceData, ObjectDataWithPrediction, Signal } from '../../pages/dataset-selection/types'
 
 const MAX_JERK = -30
 const MAX_DECELERATION = -9
