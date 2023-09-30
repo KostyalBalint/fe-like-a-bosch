@@ -12,6 +12,7 @@ import { Path3D } from './Path3D'
 import { ACESFilmicToneMapping, Vector2, Vector3 } from 'three'
 import { OrthographicCamera as OrthographicCameraImpl } from 'three/src/cameras/OrthographicCamera'
 import CameraControlsImpl from 'camera-controls'
+import { IntersectedObject } from '../../simulation/collision-avoidance/CollisionDetector'
 
 interface View3DConfig {
     showPredictions: boolean
@@ -25,6 +26,7 @@ interface View3DProps {
         yawRate: number
         predictions: Prediction[]
     }
+    collidingObject: IntersectedObject | null
     objects: ObjectDataWithPrediction[]
     config: View3DConfig
     isPlaying: boolean
@@ -100,11 +102,19 @@ const MyScene = (props: View3DProps & { isTopDownView?: boolean }) => {
                 {props.objects.map((object) => {
                     return (
                         <group key={object.id}>
-                            <UnknownObject x={object.position.x} y={object.position.y} color="white" />
+                            <UnknownObject
+                                x={object.position.x}
+                                y={object.position.y}
+                                color={props.collidingObject?.object.id === object.id ? 'red' : 'white'}
+                            />
                             <Path3D path={object.predictions.map((p) => p.position)} pathHeight={0.1} radius={0.2} />
                         </group>
                     )
                 })}
+
+                {props.collidingObject && (
+                    <UnknownObject x={props.collidingObject.intersection.x} y={props.collidingObject.intersection.y} color="green" />
+                )}
 
                 <Ego
                     predictions={props.ego.predictions}
@@ -137,6 +147,8 @@ const MyScene = (props: View3DProps & { isTopDownView?: boolean }) => {
                         <Perf position="top-left" className="absolute" />
                     </>
                 )}
+
+                <AxesHelper length={10} thickness={0.1} arrowPos={new Vector3(0, 0, 0)} />
 
                 <CameraControls
                     enabled={!props.isTopDownView}

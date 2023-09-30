@@ -6,6 +6,8 @@ import { PlaybackControl } from '../components/PlaybackControl'
 import SpeedIcon from '@mui/icons-material/Speed'
 import { Vector2 } from 'three'
 import classnames from 'classnames'
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
+import { IntersectedObject } from '../simulation/collision-avoidance/CollisionDetector'
 
 export enum ScenarioType {
     CPNCO = 'CPNCO',
@@ -32,6 +34,7 @@ export interface SimulationResult {
         yawRate: number
         predictions: Prediction[]
     }
+    collidingObject: IntersectedObject | null
     objects: ObjectDataWithPrediction[]
     scenarioType: ScenarioType | null
     avoidanceData: AvoidanceData
@@ -55,6 +58,56 @@ function ScenarioTypeIndicator({ children, active }: { children: ReactNode; acti
     )
 }
 
+function ScenarioTypes({ value }: { value: ScenarioType | null }) {
+    return (
+        <Stack className="items-center mt-8 w-full gap-4">
+            <small className="text-gray-300 font-bold text-sm tracking-wider uppercase mr-auto">Scenario Type</small>
+            {Object.keys(ScenarioType).map((type) => (
+                <ScenarioTypeIndicator key={type} active={value === type}>
+                    {type}
+                </ScenarioTypeIndicator>
+            ))}
+        </Stack>
+    )
+}
+
+function ObjectInfo({ objects }: { objects: ObjectDataWithPrediction[] }) {
+    return (
+        <Stack className="items-center mt-8 w-full gap-4">
+            <small className="text-gray-300 font-bold text-sm tracking-wider uppercase mr-auto">Object Info</small>
+            {objects.map((object) => {
+                return (
+                    <div key={object.id} className="bg-gray-900 w-full py-2 px-6 rounded-lg flex items-center gap-4">
+                        <span className="font-bold text-xl text-gray-300">#{object.id}</span>
+                        <div className="flex flex-col gap-1 font-mono text-gray-400">
+                            <span>ΔX: {object.position.x.toFixed(2)}m</span>
+                            <span>ΔY: {object.position.y.toFixed(2)}m</span>
+                        </div>
+                        <div className="flex flex-col gap-1 font-mono text-gray-400 ml-auto items-center text-xs">
+                            <ArrowForwardIcon style={{ transform: `rotate(${(object.velocity.angle() * 180) / Math.PI - 90}deg)` }} />
+                            {(object.velocity.length() * 3.6).toFixed(1)}km/h
+                        </div>
+                    </div>
+                )
+            })}
+        </Stack>
+    )
+}
+
+function Sidebar({ currentSimulationStepData }: { currentSimulationStepData: SimulationResult }) {
+    return (
+        <Stack width={400} className="p-8 bg-gray-950 items-center flex-shrink-0">
+            <Stack className="items-center">
+                <SpeedIcon className="text-white" />
+                <h1 className="text-4xl font-bold text-white ">{(currentSimulationStepData.ego.speed * 3.6).toFixed(0)} km/h</h1>
+                <small className="uppercase text-xs mt-1 text-white">speed</small>
+            </Stack>
+            <ScenarioTypes value={currentSimulationStepData.scenarioType} />
+            <ObjectInfo objects={currentSimulationStepData.objects} />
+        </Stack>
+    )
+}
+
 export const SimulationPage = (props: SimulationPageProps) => {
     const [currentSimulationStep, setCurrentSimulationStep] = useState(0)
     const [isPlaying, setIsPlaying] = useState(true)
@@ -72,6 +125,8 @@ export const SimulationPage = (props: SimulationPageProps) => {
         }
     }, [props.values.length, isPlaying, speed])
 
+    console.log(currentSimulationStepData)
+
     return (
         <Stack height="100vh" width="100vw" className="bg-[#262628]">
             <AppBar position="static" elevation={0}>
@@ -85,6 +140,7 @@ export const SimulationPage = (props: SimulationPageProps) => {
                         config={{
                             showPredictions: true,
                         }}
+                        collidingObject={currentSimulationStepData.collidingObject}
                         isPlaying={isPlaying}
                         ego={currentSimulationStepData.ego}
                         objects={currentSimulationStepData.objects}
@@ -100,19 +156,7 @@ export const SimulationPage = (props: SimulationPageProps) => {
                         total={props.values.length}
                     />
                 </Stack>
-                <Stack width={400} className="p-8 bg-gray-950 items-center flex-shrink-0">
-                    <Stack className="items-center">
-                        <SpeedIcon className="text-white" />
-                        <h1 className="text-4xl font-bold text-white ">{(currentSimulationStepData.ego.speed * 3.6).toFixed(0)} km/h</h1>
-                        <small className="uppercase text-xs mt-1 text-white">speed</small>
-                    </Stack>
-
-                    <Stack className="items-center mt-8 w-full gap-4">
-                        {Object.keys(ScenarioType).map((type) => (
-                            <ScenarioTypeIndicator active={currentSimulationStepData.scenarioType === type}>{type}</ScenarioTypeIndicator>
-                        ))}
-                    </Stack>
-                </Stack>
+                <Sidebar currentSimulationStepData={currentSimulationStepData} />
             </Stack>
         </Stack>
     )

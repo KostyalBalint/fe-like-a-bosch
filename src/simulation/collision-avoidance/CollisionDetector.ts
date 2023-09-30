@@ -25,14 +25,14 @@ export class CollisionDetector {
         return intersections[0]
     }
 
-    lineIntersect(egoPos0: Vec2, egoPos1: Vec2, objectPos0: Vec2, objectPos1: Vec2) {
-        const denom = (objectPos1.y - objectPos0.y) * (egoPos1.x - egoPos0.x) - (objectPos1.x - objectPos0.x) * (egoPos1.y - egoPos0.y)
+    lineIntersect(a1: Vec2, a2: Vec2, b1: Vec2, b2: Vec2) {
+        const denom = (b2.y - b1.y) * (a2.x - a1.x) - (b2.x - b1.x) * (a2.y - -a1.y)
         if (denom === 0) {
             return null
         }
 
-        let ua = ((objectPos1.x - objectPos0.x) * (egoPos0.y - objectPos0.y) - (objectPos1.y - objectPos0.y) * (egoPos0.x - objectPos0.x)) / denom
-        let ub = ((egoPos1.x - egoPos0.x) * (egoPos0.y - objectPos0.y) - (egoPos1.y - egoPos0.y) * (egoPos0.x - objectPos0.x)) / denom
+        let ua = ((b2.x - b1.x) * (-a1.y - b1.y) - (b2.y - b1.y) * (a1.x - b1.x)) / denom
+        let ub = ((a2.x - a1.x) * (-a1.y - b1.y) - (a2.y - -a1.y) * (a1.x - b1.x)) / denom
 
         // is the intersection along the segments
         if (ua < 0 || ua > 1 || ub < 0 || ub > 1) {
@@ -40,8 +40,8 @@ export class CollisionDetector {
         }
 
         // Return a object with the x and y coordinates of the intersection
-        let x = egoPos0.x + ua * (egoPos1.x - egoPos0.x)
-        let y = egoPos0.y + ua * (egoPos1.y - egoPos0.y)
+        let x = a1.x + ua * (a2.x - a1.x)
+        let y = -a1.y + ua * (a2.y - -a1.y)
 
         return { x, y }
     }

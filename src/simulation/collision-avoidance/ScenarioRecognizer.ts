@@ -7,6 +7,6 @@ export class ScenarioRecognizer {
         if (Math.sqrt(intersectedObject.intersection.x ** 2 + intersectedObject.intersection.y ** 2) < 5) {
         }
 
-        return null
+        return ScenarioType.CPLA
     }
 }

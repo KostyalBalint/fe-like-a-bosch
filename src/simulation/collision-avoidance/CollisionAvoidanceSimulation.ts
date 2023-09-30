@@ -47,7 +47,7 @@ export class CollisionAvoidanceSimulation implements Simulation {
                         this.dataset[step].vehicleSpeed * Math.cos(this.heading),
                         this.dataset[step].vehicleSpeed * Math.sin(this.heading)
                     ),
-                    position: this.egoLocation,
+                    position: this.egoLocation.clone(),
                     id: 10,
                 },
             ],
@@ -75,6 +75,7 @@ export class CollisionAvoidanceSimulation implements Simulation {
                 })),
                 yawRate: this.dataset[step].yawRate,
             },
+            collidingObject,
             objects: objectsWithPredictions,
             avoidanceData,
             scenarioType,
