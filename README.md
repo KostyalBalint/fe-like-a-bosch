@@ -5,6 +5,9 @@
 ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![MUI](https://img.shields.io/badge/MUI-%230081CB.svg?style=for-the-badge&logo=mui&logoColor=white)
 
+## Demo
+[Link](https://crash-craft.netlify.app/)
+
 ## Description
 CrashCraft is a collision detection and avoidance framework and simulation engine, written in React.
 
