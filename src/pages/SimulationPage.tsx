@@ -8,6 +8,7 @@ import { Vector2 } from 'three'
 import classnames from 'classnames'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import { IntersectedObject } from '../simulation/collision-avoidance/CollisionDetector'
+import { SelectedObjectProvider, useSelectedObject } from '../providers/selectedObjectProvider'
 
 export enum ScenarioType {
     CPNCO = 'CPNCO',
@@ -72,12 +73,20 @@ function ScenarioTypes({ value }: { value: ScenarioType | null }) {
 }
 
 function ObjectInfo({ objects }: { objects: ObjectDataWithPrediction[] }) {
+    const { setSelectedObject, selectedObject } = useSelectedObject()
+
     return (
         <Stack className="items-center mt-8 w-full gap-4">
             <small className="text-gray-300 font-bold text-sm tracking-wider uppercase mr-auto">Object Info</small>
             {objects.map((object) => {
                 return (
-                    <div key={object.id} className="bg-gray-900 w-full py-2 px-6 rounded-lg flex items-center gap-4">
+                    <div
+                        key={object.id}
+                        onClick={() => setSelectedObject(object.id)}
+                        className={`${
+                            selectedObject === object.id ? 'border-blue-900' : 'border-gray-900'
+                        } 'bg-gray-900 border-2 w-full py-2 px-6 rounded-lg flex items-center gap-4`}
+                    >
                         <span className="font-bold text-xl text-gray-300">#{object.id}</span>
                         <div className="flex flex-col gap-1 font-mono text-gray-400">
                             <span>ΔX: {object.position.x.toFixed(2)}m</span>
@@ -128,36 +137,38 @@ export const SimulationPage = (props: SimulationPageProps) => {
     console.log(currentSimulationStepData)
 
     return (
-        <Stack height="100vh" width="100vw" className="bg-[#262628]">
-            <AppBar position="static" elevation={0}>
-                <div className="flex items-center justify-between h-16 px-4 bg-gray-900 border-gray-800 border-b">
-                    <img src="/logo.png" alt="logo" className="h-8" />
-                </div>
-            </AppBar>
-            <Stack height="100%" flexGrow={1} direction="row">
-                <Stack height="100%" width="100%">
-                    <View3D
-                        config={{
-                            showPredictions: true,
-                        }}
-                        collidingObject={currentSimulationStepData.collidingObject}
-                        isPlaying={isPlaying}
-                        ego={currentSimulationStepData.ego}
-                        objects={currentSimulationStepData.objects}
-                    />
-                    <PlaybackControl
-                        timestamp={currentSimulationStepData.timestamp - props.values[0].timestamp}
-                        value={currentSimulationStep}
-                        onTogglePlayback={() => setIsPlaying((isPlaying) => !isPlaying)}
-                        onChange={(value) => setCurrentSimulationStep(value)}
-                        speed={speed}
-                        onSpeedChange={setSpeed}
-                        isPlaying={isPlaying}
-                        total={props.values.length}
-                    />
+        <SelectedObjectProvider>
+            <Stack height="100vh" width="100vw" className="bg-[#262628]">
+                <AppBar position="static" elevation={0}>
+                    <div className="flex items-center justify-between h-16 px-4 bg-gray-900 border-gray-800 border-b">
+                        <img src="/logo.png" alt="logo" className="h-8" />
+                    </div>
+                </AppBar>
+                <Stack height="100%" flexGrow={1} direction="row">
+                    <Stack height="100%" width="100%">
+                        <View3D
+                            config={{
+                                showPredictions: true,
+                            }}
+                            collidingObject={currentSimulationStepData.collidingObject}
+                            isPlaying={isPlaying}
+                            ego={currentSimulationStepData.ego}
+                            objects={currentSimulationStepData.objects}
+                        />
+                        <PlaybackControl
+                            timestamp={currentSimulationStepData.timestamp - props.values[0].timestamp}
+                            value={currentSimulationStep}
+                            onTogglePlayback={() => setIsPlaying((isPlaying) => !isPlaying)}
+                            onChange={(value) => setCurrentSimulationStep(value)}
+                            speed={speed}
+                            onSpeedChange={setSpeed}
+                            isPlaying={isPlaying}
+                            total={props.values.length}
+                        />
+                    </Stack>
+                    <Sidebar currentSimulationStepData={currentSimulationStepData} />
                 </Stack>
-                <Sidebar currentSimulationStepData={currentSimulationStepData} />
             </Stack>
-        </Stack>
+        </SelectedObjectProvider>
     )
 }

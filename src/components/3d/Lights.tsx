@@ -1,10 +1,13 @@
 import React from 'react'
+import { Environment } from '@react-three/drei'
 
 export function Lights() {
     return (
         <>
-            <ambientLight intensity={30} />
-            <pointLight shadow-mapSize-width={4096} shadow-mapSize-height={4096} position={[0, 10, 0]} intensity={300} castShadow />
+            <Environment files={'assets/quattro_canti_1k.hdr'}>
+                <ambientLight intensity={1} />
+            </Environment>
         </>
+        //<pointLight position={[0, 10, 0]} intensity={300} />
     )
 }
