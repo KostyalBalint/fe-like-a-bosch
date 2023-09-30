@@ -1,4 +1,3 @@
-import { Button, Stack, Typography } from '@mui/material'
 import { Vector2 } from 'three'
 import { SimulationEngine } from '../simulation/SimulationEngine'
 import { CollisionAvoidanceSimulation } from '../simulation/collision-avoidance/CollisionAvoidanceSimulation'
@@ -6,6 +5,7 @@ import React from 'react'
 import { parseCSV } from '../utils/parseCSV'
 import { SimulationResult } from './SimulationPage'
 import { CarShowRoom } from '../components/3d/CarShowRoom'
+import { FileUpload } from '../components/FileUpload'
 
 export interface CSVData {
     timestamp: number
@@ -64,10 +64,8 @@ type RawDataRow = {
 }
 
 export const DatasetSelectionPage = ({ onSelect }: { onSelect(results: SimulationResult[]): void }) => {
-    async function handleSelect(name: string) {
-        const response = await fetch(name)
-        const data = await response.text()
-        const csv: RawDataRow[] = parseCSV(data)
+    async function runSimulation(rawData: string) {
+        const csv: RawDataRow[] = parseCSV(rawData)
         const convertedData = csv.map((row): CSVData => {
             return {
                 vehicleSpeed: Number(row.VehicleSpeed) / 256,
@@ -99,8 +97,18 @@ export const DatasetSelectionPage = ({ onSelect }: { onSelect(results: Simulatio
         })
         const simulation = new SimulationEngine(new CollisionAvoidanceSimulation())
         const result = simulation.run(convertedData)
-        console.log(result)
         onSelect(result)
+    }
+
+    async function handleSelect(name: string) {
+        const response = await fetch(name)
+        const data = await response.text()
+        await runSimulation(data)
+    }
+
+    async function handleUpload(file: File) {
+        const data = await file.text()
+        await runSimulation(data)
     }
 
     return (
@@ -132,10 +140,12 @@ export const DatasetSelectionPage = ({ onSelect }: { onSelect(results: Simulatio
                 </div>
 
                 <div className="flex flex-col max-w-md w-full gap-8">
-                    <span className="uppercase font-bold text-white">Use existing</span>
+                    <span className="uppercase font-bold text-white">Upload your own</span>
                     <button className="rounded-lg w-fulltext-white relative z-10 flex group">
                         <div className="absolute inset-2 group-hover:inset-1 bg-gradient-to-r from-blue-600 to-pink-500 blur-xl -z-10" />
-                        <div className="bg-black px-24 py-8 w-full h-full rounded-2xl">Upload your own</div>
+                        <div className="bg-black px-24 py-8 w-full h-full rounded-2xl">
+                            <FileUpload onFileUpload={(file) => handleUpload(file)} />
+                        </div>
                     </button>
                 </div>
             </div>
