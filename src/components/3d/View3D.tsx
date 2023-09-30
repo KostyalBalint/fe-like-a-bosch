@@ -98,7 +98,6 @@ const MyScene = (props: View3DProps & { isTopDownView?: boolean }) => {
         <Suspense fallback={null}>
             <scene>
                 <Lights />
-
                 {props.objects.map((object) => {
                     return (
                         <group key={object.id}>
@@ -111,11 +110,9 @@ const MyScene = (props: View3DProps & { isTopDownView?: boolean }) => {
                         </group>
                     )
                 })}
-
                 {props.collidingObject && (
                     <UnknownObject x={props.collidingObject.intersection.x} y={props.collidingObject.intersection.y} color="green" />
                 )}
-
                 <Ego
                     predictions={props.ego.predictions}
                     heading={props.ego.heading}
@@ -123,9 +120,7 @@ const MyScene = (props: View3DProps & { isTopDownView?: boolean }) => {
                     yawRate={props.ego.yawRate}
                     isPlaying={props.isPlaying}
                 />
-
                 <BasePlane carPosition={props.ego.position} />
-
                 {props.isTopDownView && (
                     <OrthographicCamera
                         ref={cameraRef}
@@ -140,16 +135,13 @@ const MyScene = (props: View3DProps & { isTopDownView?: boolean }) => {
                         bottom={frustumSize / -2}
                     />
                 )}
-
                 {!props.isTopDownView && (
                     <>
                         <PerspectiveCamera far={200} makeDefault position={[-20, 10, 0]} />
                         <Perf position="top-left" className="absolute" />
                     </>
                 )}
-
                 <AxesHelper length={10} thickness={0.1} arrowPos={new Vector3(0, 0, 0)} />
-
                 <CameraControls
                     enabled={!props.isTopDownView}
                     ref={orbitControlRef}
@@ -158,7 +150,6 @@ const MyScene = (props: View3DProps & { isTopDownView?: boolean }) => {
                     minDistance={5}
                     maxDistance={60}
                 />
-
                 <CameraControls
                     enabled={props.isTopDownView}
                     camera={fakeCamera}

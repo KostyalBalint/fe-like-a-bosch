@@ -53,8 +53,14 @@ export class CollisionAvoidanceSimulation implements Simulation {
             ],
             this.dataset[step].timestamp
         )[0]
+
+        egoPrediction.predictions = egoPrediction.predictions.map((p) => ({
+            position: new Vector2(p.position.x - this.egoLocation.x, p.position.y - this.egoLocation.y),
+            timestamp: p.timestamp,
+        }))
+
         // 3. Recognize scenario
-        const collidingObject = this.collisionDetector.findCollision(egoPrediction, objectsWithPredictions)
+        const collidingObject = this.collisionDetector.findCollision(egoPrediction, objectsWithPredictions, this.dataset[step].timestamp)
         let scenarioType = null
         if (collidingObject) {
             scenarioType = this.scenarioRecognizer.recognizeScenario(egoPrediction, collidingObject)
@@ -69,10 +75,7 @@ export class CollisionAvoidanceSimulation implements Simulation {
                 position: this.egoLocation.clone(),
                 speed: this.dataset[step].vehicleSpeed,
                 heading: this.heading,
-                predictions: egoPrediction.predictions.map((p) => ({
-                    position: new Vector2(p.position.x - this.egoLocation.x, p.position.y - this.egoLocation.y),
-                    timestamp: p.timestamp,
-                })),
+                predictions: egoPrediction.predictions,
                 yawRate: this.dataset[step].yawRate,
             },
             collidingObject,
