@@ -1,5 +1,4 @@
 import { ScenarioType } from '../../pages/SimulationPage'
-import { ObjectDataWithPrediction } from '../../pages/DatasetSelectionPage'
 import { IntersectedObject } from './CollisionDetector'
 import { ScenarioTypeChecker } from './ScenarioRecognizer'
 import { EgoData } from './CollisionAvoidanceSimulation'
