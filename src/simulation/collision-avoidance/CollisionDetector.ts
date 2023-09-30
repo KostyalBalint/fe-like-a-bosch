@@ -9,13 +9,14 @@ export type IntersectedObject = {
 }
 
 export class CollisionDetector {
-    findCollision(egoPrediction: ObjectDataWithPrediction, objects: ObjectDataWithPrediction[]): IntersectedObject | null {
+    findCollision(ego: ObjectDataWithPrediction, objects: ObjectDataWithPrediction[], timestamp: number): IntersectedObject | null {
+        if (timestamp === 65.48331492) console.log(ego, objects)
         const intersections = objects
             .map((object) => ({
                 object,
                 intersection: this.findIntersection(
                     object.predictions.map((p) => p.position),
-                    egoPrediction.predictions.map((p) => p.position)
+                    ego.predictions.map((p) => p.position)
                 ),
             }))
             .filter((i) => i.intersection !== null) as IntersectedObject[]
@@ -26,13 +27,13 @@ export class CollisionDetector {
     }
 
     lineIntersect(a1: Vec2, a2: Vec2, b1: Vec2, b2: Vec2) {
-        const denom = (b2.y - b1.y) * (a2.x - a1.x) - (b2.x - b1.x) * (a2.y - -a1.y)
+        const denom = (b2.y - b1.y) * (a2.x - a1.x) - (b2.x - b1.x) * (-a2.y - -a1.y)
         if (denom === 0) {
             return null
         }
 
         let ua = ((b2.x - b1.x) * (-a1.y - b1.y) - (b2.y - b1.y) * (a1.x - b1.x)) / denom
-        let ub = ((a2.x - a1.x) * (-a1.y - b1.y) - (a2.y - -a1.y) * (a1.x - b1.x)) / denom
+        let ub = ((a2.x - a1.x) * (-a1.y - b1.y) - (-a2.y - -a1.y) * (a1.x - b1.x)) / denom
 
         // is the intersection along the segments
         if (ua < 0 || ua > 1 || ub < 0 || ub > 1) {
@@ -41,7 +42,7 @@ export class CollisionDetector {
 
         // Return a object with the x and y coordinates of the intersection
         let x = a1.x + ua * (a2.x - a1.x)
-        let y = -a1.y + ua * (a2.y - -a1.y)
+        let y = -a1.y + ua * (-a2.y - -a1.y)
 
         return { x, y }
     }
@@ -56,7 +57,10 @@ export class CollisionDetector {
                 const egoPos0 = egoPredictions[j]
                 const egoPos1 = egoPredictions[j + 1]
                 const intersection = this.lineIntersect(egoPos0, egoPos1, objectPos0, objectPos1)
-                if (intersection) return intersection
+                if (intersection) {
+                    console.log('Found intersection', intersection)
+                    return intersection
+                }
             }
         }
         return null
