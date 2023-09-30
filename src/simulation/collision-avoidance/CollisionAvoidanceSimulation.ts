@@ -1,12 +1,21 @@
 import { Simulation } from '../SimulationEngine'
 import { ScenarioType, SimulationResult } from '../../pages/SimulationPage'
-import { CSVData, ObjectData } from '../../pages/DatasetSelectionPage'
+import { CSVData, ObjectData, Prediction } from '../../pages/DatasetSelectionPage'
 import { AvoidanceCalculator } from './AvoidanceCalculator'
 import { CollisionDetector } from './CollisionDetector'
 import { PredictionEngine } from './PredictionEngine'
 import { ObjectFilter } from './ObjectFilter'
 import { Vector2 } from 'three'
 import { ScenarioRecognizer } from './ScenarioRecognizer'
+
+export interface EgoData {
+    position: Vector2
+    speed: number
+    heading: number
+    predictions: Prediction[]
+    yawRate: number
+    velocity: Vector2
+}
 
 export class CollisionAvoidanceSimulation implements Simulation {
     private dataset: CSVData[] = []
@@ -37,16 +46,17 @@ export class CollisionAvoidanceSimulation implements Simulation {
         this.egoLocation.x += this.dataset[step].vehicleSpeed * Math.cos(this.heading) * dt
         this.egoLocation.y += this.dataset[step].vehicleSpeed * Math.sin(this.heading) * dt
 
+        const egoVelocity = new Vector2(
+            this.dataset[step].vehicleSpeed * Math.cos(this.heading),
+            this.dataset[step].vehicleSpeed * Math.sin(this.heading)
+        )
+
         // 2. Predict objects
         const objectsWithPredictions = this.predictionEngine.predictAll(filteredObjects, this.dataset[step].timestamp)
-
         const egoPrediction = this.predictionEngine.predictAll(
             [
                 {
-                    velocity: new Vector2(
-                        this.dataset[step].vehicleSpeed * Math.cos(this.heading),
-                        this.dataset[step].vehicleSpeed * Math.sin(this.heading)
-                    ),
+                    velocity: egoVelocity,
                     position: this.egoLocation.clone(),
                     id: 10,
                 },
@@ -59,11 +69,21 @@ export class CollisionAvoidanceSimulation implements Simulation {
             timestamp: p.timestamp,
         }))
 
+        const ego: EgoData = {
+            position: this.egoLocation.clone(),
+            speed: this.dataset[step].vehicleSpeed,
+            velocity: egoVelocity,
+
+            heading: this.heading,
+            predictions: egoPrediction.predictions,
+            yawRate: this.dataset[step].yawRate,
+        }
+
         // 3. Recognize scenario
         const collidingObject = this.collisionDetector.findCollision(egoPrediction, objectsWithPredictions, this.dataset[step].timestamp)
         let scenarioType = null
         if (collidingObject) {
-            scenarioType = this.scenarioRecognizer.recognizeScenario(egoPrediction, collidingObject)
+            scenarioType = this.scenarioRecognizer.recognizeScenario(ego, collidingObject)
         }
 
         // 4. Calculate avoidance data
@@ -71,13 +91,7 @@ export class CollisionAvoidanceSimulation implements Simulation {
 
         return {
             timestamp: this.dataset[step].timestamp,
-            ego: {
-                position: this.egoLocation.clone(),
-                speed: this.dataset[step].vehicleSpeed,
-                heading: this.heading,
-                predictions: egoPrediction.predictions,
-                yawRate: this.dataset[step].yawRate,
-            },
+            ego,
             collidingObject,
             objects: objectsWithPredictions,
             avoidanceData,
