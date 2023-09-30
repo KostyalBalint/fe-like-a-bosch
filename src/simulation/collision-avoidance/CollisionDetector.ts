@@ -93,7 +93,7 @@ export class CollisionDetector {
             for (let j = 0; j < egoPredictions.length - 1; j++) {
                 const egoPos0 = egoPredictions[j]
                 const egoPos1 = egoPredictions[j + 1]
-                const intersection = this.lineIntersectWithWidth(egoPos0, egoPos1, objectPos0, objectPos1, egoWidth, objectWidth)
+                const intersection = this.lineIntersect(egoPos0, egoPos1, objectPos0, objectPos1)
                 if (intersection) {
                     return intersection
                 }
