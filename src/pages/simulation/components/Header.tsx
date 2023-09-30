@@ -4,8 +4,8 @@ import { View3DConfig } from '../../../components/3d/View3D'
 import TurnSlightRightIcon from '@mui/icons-material/TurnSlightRight'
 import StraightenIcon from '@mui/icons-material/Straighten'
 import CloseIcon from '@mui/icons-material/Close'
-
 import classnames from 'classnames'
+
 export function Header({ config, onChange, onBack }: { config: View3DConfig; onChange: (config: View3DConfig) => void; onBack: () => void }) {
     function togglePredictions() {
         onChange({
@@ -39,24 +39,26 @@ export function Header({ config, onChange, onBack }: { config: View3DConfig; onC
                 <div className="flex items-center gap-2">
                     <Tooltip title="Toggle intersection visibility">
                         <IconButton onClick={toggleIntersection} active={config.showIntersections}>
-                            <CloseIcon />
+                            <CloseIcon id="toggle-intersection" />
                         </IconButton>
                     </Tooltip>
 
                     <Tooltip title="Toggle prediction visibility">
                         <IconButton onClick={togglePredictions} active={config.showPredictions}>
-                            <TurnSlightRightIcon />
+                            <TurnSlightRightIcon id="toggle-prediction" />
                         </IconButton>
                     </Tooltip>
 
                     <Tooltip title="Toggle brake distance visibility">
                         <IconButton onClick={toggleBrakeDistance} active={config.showBrakeDistance}>
-                            <StraightenIcon />
+                            <StraightenIcon id="toggle-brake" />
                         </IconButton>
                     </Tooltip>
 
                     <ButtonBase onClick={onBack}>
-                        <span className="text-white rounded p-2 bg-gray-800">Change dataset</span>
+                        <span id="change-dataset" className="text-white rounded p-2 bg-gray-800">
+                            Change dataset
+                        </span>
                     </ButtonBase>
                 </div>
             </div>

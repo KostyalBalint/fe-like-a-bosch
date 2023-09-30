@@ -8,7 +8,7 @@ export function ObjectInfo({ objects }: { objects: ObjectDataWithPrediction[] })
     const { setSelectedObject, selectedObject } = useSelectedObject()
 
     return (
-        <Stack className="items-center mt-8 w-full gap-4">
+        <Stack id="object-info" className="items-center mt-8 w-full gap-4">
             <small className="text-gray-300 font-bold text-sm tracking-wider uppercase mr-auto">Object Info</small>
             {objects.map((object) => {
                 return (

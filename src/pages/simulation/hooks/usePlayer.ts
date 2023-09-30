@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 
 export function usePlayer(props: SimulationPageProps) {
     const [currentSimulationStep, setCurrentSimulationStep] = useState(0)
-    const [isPlaying, setIsPlaying] = useState(true)
+    const [isPlaying, setIsPlaying] = useState(false)
     const [speed, setSpeed] = useState(1)
 
     const currentSimulationStepData = props.values[currentSimulationStep]

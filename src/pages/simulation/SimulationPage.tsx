@@ -7,6 +7,7 @@ import { SimulationPageProps } from '../dataset-selection/types'
 import { Sidebar } from './components/Sidebar'
 import { usePlayer } from './hooks/usePlayer'
 import { Header } from './components/Header'
+import { Tutorial } from '../../components/Tutorial'
 
 export const SimulationPage = (props: SimulationPageProps) => {
     const [config, setConfig] = useState<View3DConfig>({
@@ -18,7 +19,8 @@ export const SimulationPage = (props: SimulationPageProps) => {
 
     return (
         <SelectedObjectContextProvider>
-            <Stack height="100vh" width="100vw" className="bg-[#161616]">
+            <Tutorial onDone={() => setIsPlaying(true)} />
+            <Stack id="simulation" height="100vh" width="100vw" sx={{ overflow: 'hidden' }} className="bg-[#161616]">
                 <Stack height="100%" flexGrow={1} direction="row">
                     <Stack height="100%" width="100%">
                         <Header onBack={props.onBack} config={config} onChange={setConfig} />

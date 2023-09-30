@@ -39,7 +39,7 @@ export class CollisionAvoidanceSimulation implements Simulation {
         // 1. Filter objects
         const filteredObjects = this.filter.filterObjects(this.dataset[step].objects)
 
-        // 1. calculate the location of the vehicle based on the speed and heading
+        // 2. calculate the location of the vehicle based on the speed and heading
         const dt = step === 0 ? 0 : this.dataset[step].timestamp - this.dataset[step - 1].timestamp
         this.heading -= this.dataset[step].yawRate * dt
         this.egoLocation.x += this.dataset[step].vehicleSpeed * Math.cos(this.heading) * dt
@@ -50,7 +50,7 @@ export class CollisionAvoidanceSimulation implements Simulation {
             this.dataset[step].vehicleSpeed * Math.sin(this.heading)
         )
 
-        // 2. Predict objects
+        // 3. Predict objects
         const objectsWithPredictions = this.predictionEngine.predictAll(filteredObjects, this.dataset[step].timestamp)
         const egoPrediction = this.predictionEngine.predictAll(
             [
@@ -78,14 +78,14 @@ export class CollisionAvoidanceSimulation implements Simulation {
             yawRate: this.dataset[step].yawRate,
         }
 
-        // 3. Recognize scenario
+        // 4. Recognize scenario
         const collidingObject = this.collisionDetector.findCollision(egoPrediction, objectsWithPredictions, this.dataset[step].timestamp)
         let scenarioType = null
         if (collidingObject) {
             scenarioType = this.scenarioRecognizer.recognizeScenario(ego, collidingObject)
         }
 
-        // 4. Calculate avoidance data
+        // 5. Calculate avoidance data
         const avoidanceData = this.avoidanceCalculator.calculateAvoidanceData(egoPrediction, collidingObject)
 
         return {

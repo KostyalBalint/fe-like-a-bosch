@@ -77,6 +77,7 @@ export function PlaybackControl({ onTogglePlayback, onSpeedChange, value, isPlay
                 {timestamp.toFixed(2)}s
             </Typography>
             <Slider
+                id="timeline"
                 aria-label="time-indicator"
                 size="small"
                 value={value}

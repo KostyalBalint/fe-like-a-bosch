@@ -10,9 +10,10 @@ import { CSVData, RawDataRow, SimulationResult } from './types'
 
 interface DatasetSelectionPageProps {
     onSelect(results: SimulationResult[]): void
+    onEdit(): void
 }
 
-export const DatasetSelectionPage = ({ onSelect }: DatasetSelectionPageProps) => {
+export const DatasetSelectionPage = ({ onSelect, onEdit }: DatasetSelectionPageProps) => {
     async function runSimulation(rawData: string) {
         const csv: RawDataRow[] = parseCSV(rawData)
         const convertedData = csv.map((row): CSVData => convertRow(row))
@@ -38,6 +39,10 @@ export const DatasetSelectionPage = ({ onSelect }: DatasetSelectionPageProps) =>
                 <Title />
                 <ExistingDataset onClick={(name) => handleSelect(name)} />
                 <CustomFileUpload onFileUpload={(file) => handleUpload(file)} />
+
+                <button className="text-white font-sm" onClick={onEdit}>
+                    Open Editor
+                </button>
             </div>
         </div>
     )

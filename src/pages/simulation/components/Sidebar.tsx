@@ -10,7 +10,7 @@ import React from 'react'
 export function Sidebar({ currentSimulationStepData }: { currentSimulationStepData: SimulationResult }) {
     return (
         <Stack width={400} className="p-8 bg-gray-950 items-center flex-shrink-0">
-            <Stack direction="row" className="items-center justify-between w-full">
+            <Stack id="vehicle-status" direction="row" className="items-center justify-between w-full">
                 <HornIcon active={currentSimulationStepData.avoidanceData.signal === Signal.HORN} />
                 <Stack className="items-center">
                     <SpeedIcon className="text-white" />
@@ -19,7 +19,7 @@ export function Sidebar({ currentSimulationStepData }: { currentSimulationStepDa
                 </Stack>
                 <HeadlightIcon active={currentSimulationStepData.avoidanceData.signal === Signal.HEADLIGHT_FLASH} />
             </Stack>
-            <div className="w-full mt-5">
+            <div id="deceleration-needed" className="w-full mt-5">
                 <LinearProgress variant="determinate" value={(currentSimulationStepData.avoidanceData.decelerationNeeded * 100) / 9} />
             </div>
             <span className="text-white text-xs font-bold tracking-wider uppercase mt-2">Deceleration Needed</span>
