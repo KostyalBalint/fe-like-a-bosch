@@ -1,26 +1,30 @@
 import { Simulation } from '../SimulationEngine'
-import { SimulationResult } from '../../pages/SimulationPage'
+import { ScenarioType, SimulationResult } from '../../pages/SimulationPage'
 import { CSVData, ObjectData } from '../../pages/DatasetSelectionPage'
 import { AvoidanceCalculator } from './AvoidanceCalculator'
-import { ScenarioRecognizer } from './ScenarioRecognizer'
+import { CollisionDetector } from './CollisionDetector'
 import { PredictionEngine } from './PredictionEngine'
 import { ObjectFilter } from './ObjectFilter'
 import { Vector2 } from 'three'
+import { ScenarioRecognizer } from './ScenarioRecognizer'
 
 export class CollisionAvoidanceSimulation implements Simulation {
     private dataset: CSVData[] = []
     private filter: ObjectFilter
     private predictionEngine: PredictionEngine
-    private scenarioRecognizer: ScenarioRecognizer
+    private collisionDetector: CollisionDetector
     private avoidanceCalculator: AvoidanceCalculator
+
+    private scenarioRecognizer: ScenarioRecognizer
     private heading = 0
     private egoLocation = new Vector2(0, 0)
 
     constructor() {
         this.filter = new ObjectFilter()
         this.predictionEngine = new PredictionEngine()
-        this.scenarioRecognizer = new ScenarioRecognizer()
+        this.collisionDetector = new CollisionDetector()
         this.avoidanceCalculator = new AvoidanceCalculator()
+        this.scenarioRecognizer = new ScenarioRecognizer()
     }
 
     runSimulationStep(step: number): SimulationResult {
@@ -50,10 +54,14 @@ export class CollisionAvoidanceSimulation implements Simulation {
             this.dataset[step].timestamp
         )[0]
         // 3. Recognize scenario
-        const scenarioType = this.scenarioRecognizer.recognizeScenario(objectsWithPredictions)
+        const collidingObject = this.collisionDetector.findCollision(egoPrediction, objectsWithPredictions)
+        let scenarioType = null
+        if (collidingObject) {
+            scenarioType = this.scenarioRecognizer.recognizeScenario(egoPrediction, collidingObject)
+        }
 
         // 4. Calculate avoidance data
-        const avoidanceData = this.avoidanceCalculator.calculateAvoidanceData(objectsWithPredictions, scenarioType)
+        const avoidanceData = this.avoidanceCalculator.calculateAvoidanceData(egoPrediction, collidingObject)
 
         return {
             timestamp: this.dataset[step].timestamp,
