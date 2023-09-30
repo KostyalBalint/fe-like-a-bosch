@@ -136,8 +136,9 @@ export const DatasetSelectionPage = ({ onSelect }: { onSelect(results: Simulatio
 
                 <div className="flex flex-col gap-4 max-w-md w-full">
                     <span className="uppercase font-bold text-white">Use existing</span>
-                    <DatasetButton onClick={() => handleSelect('dataset.csv')}>dataset.csv</DatasetButton>
+                    <DatasetButton onClick={() => handleSelect('dataset.csv')}>dataset.csv [CPTA]</DatasetButton>
                     <DatasetButton onClick={() => handleSelect('CPNCO.csv')}>CPNCO Test</DatasetButton>
+                    <DatasetButton onClick={() => handleSelect('CPLA.csv')}>CPLA Test</DatasetButton>
                 </div>
 
                 <div className="flex flex-col max-w-md w-full gap-8">

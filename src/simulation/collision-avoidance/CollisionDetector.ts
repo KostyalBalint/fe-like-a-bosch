@@ -77,20 +77,14 @@ export class CollisionDetector {
         const b1Offset = offsetLine(b1, b2, bWidth / 2)
         const b2Offset = offsetLine(b1, b2, -bWidth / 2)
 
-        const i1 = this.planeIntersect(a1Offset.start, a1Offset.end, b1Offset.start, b1Offset.end)
-        if (i1) return i1
-        const i2 = this.planeIntersect(a1Offset.start, b1Offset.start, a1Offset.end, b1Offset.end)
-        if (i2) return i2
-        const i3 = this.planeIntersect(a1Offset.start, b1Offset.end, a1Offset.end, b1Offset.start)
-        if (i3) return i3
-        const i4 = this.planeIntersect(a1Offset.end, b1Offset.start, a1Offset.start, b1Offset.end)
+        return this.planeIntersect(a1Offset.start, a2Offset.end, b1Offset.start, b2Offset.end)
     }
 
     findIntersection(objectPredictions: Vector2[], egoPredictions: Vector2[]) {
         if (objectPredictions.length < 2 || egoPredictions.length < 2) return null
 
-        const egoWidth = 1
-        const objectWidth = 0.5
+        const egoWidth = 1.5
+        const objectWidth = 1
 
         for (let i = 0; i < objectPredictions.length - 1; i++) {
             const objectPos0 = objectPredictions[i]
