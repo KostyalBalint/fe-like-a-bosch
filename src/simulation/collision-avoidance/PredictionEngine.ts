@@ -1,7 +1,7 @@
 import { Vector2 } from 'three'
 import { ObjectData, ObjectDataWithPrediction, Prediction } from '../../pages/dataset-selection/types'
 
-const MAX_PREDICTION_SECONDS = 5
+const MAX_PREDICTION_SECONDS = 4
 
 type ObjectDataWithTimeStamp = {
     objects: ObjectData[]
@@ -13,17 +13,17 @@ export class PredictionEngine {
 
     predictAll(objects: ObjectData[], timeStamp: number): ObjectDataWithPrediction[] {
         this.allFilteredObjects.push({ objects, timeStamp })
-        return objects.map((o) => this.generatePredictionsForObject(o))
+        return objects.map((o) => this.generatePredictionsForObject(o, timeStamp))
     }
 
-    generatePredictionsForObject(object: ObjectData): ObjectDataWithPrediction {
+    generatePredictionsForObject(object: ObjectData, timestamp: number): ObjectDataWithPrediction {
         return {
             ...object,
-            predictions: Array.from({ length: MAX_PREDICTION_SECONDS * 5 }).map((_, idx) => this.predictLocation(object, idx / 5)),
+            predictions: Array.from({ length: MAX_PREDICTION_SECONDS }).map((_, idx) => this.predictLocation(object, idx * 1.25, timestamp)),
         }
     }
 
-    private predictLocation(object: ObjectData, relativeTimeDiff: number): Prediction {
+    private predictLocation(object: ObjectData, relativeTimeDiff: number, timestamp: number): Prediction {
         const history = this.getHistory(object)
         const window = 10
         const count = 15
@@ -39,8 +39,7 @@ export class PredictionEngine {
 
         const movingAverageAcceleration = this.getMovingAverageAcceleration(history, window, count)
         const weightedMovingAverageAcceleration = movingAverageAcceleration.map((a, idx) => {
-            const weight = movingAverageAcceleration.length - idx
-            return new Vector2(a.x * weight, a.y * weight)
+            return new Vector2(a.x * idx, a.y * idx)
         })
         const totalWeight = ((movingAverageAcceleration.length + 1) / 2) * movingAverageAcceleration.length
         const ax = weightedMovingAverageAcceleration.reduce((acc, a) => acc + a.x, 0) / totalWeight
@@ -50,7 +49,7 @@ export class PredictionEngine {
         const predictedX = actualPosition.x + actualVelocity.x * t + 0.5 * ax * t * t
         const predictedY = actualPosition.y + actualVelocity.y * t + 0.5 * ay * t * t
 
-        return { position: new Vector2(predictedX, predictedY), timestamp: t }
+        return { position: new Vector2(predictedX, predictedY), timestamp: t + timestamp }
     }
 
     private getHistory(object: ObjectData) {

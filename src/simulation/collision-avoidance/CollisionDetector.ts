@@ -1,5 +1,5 @@
 import { Vector2 } from 'three'
-import { ObjectDataWithPrediction } from '../../pages/dataset-selection/types'
+import { ObjectDataWithPrediction, Prediction } from '../../pages/dataset-selection/types'
 
 const MAX_DISTANCE = 15
 const CAR_WIDTH = 1.8
@@ -14,10 +14,7 @@ export class CollisionDetector {
         const intersections = objects
             .map((object) => ({
                 object,
-                intersection: this.findIntersection(
-                    object.predictions.map((p) => p.position),
-                    ego.predictions.map((p) => p.position)
-                ),
+                intersection: this.findIntersection(object.predictions, ego),
             }))
             .filter((i) => i.intersection !== null) as IntersectedObject[]
 
@@ -53,59 +50,32 @@ export class CollisionDetector {
         let x = a1.x + ua * (a2.x - a1.x)
         let y = -a1.y + ua * (-a2.y - -a1.y)
 
-        return { x, y }
+        return { x, y, ua, ub }
     }
 
-    planeIntersect(a1: Vector2, a2: Vector2, b1: Vector2, b2: Vector2) {
-        const i1 = this.lineIntersect(a1, a2, b1, b2)
-        if (i1) return i1
-        const i2 = this.lineIntersect(a1, b1, a2, b2)
-        if (i2) return i2
-        const i3 = this.lineIntersect(a1, b2, a2, b1)
-        if (i3) return i3
-        const i4 = this.lineIntersect(a2, b1, a1, b2)
-        if (i4) return i4
-    }
-
-    lineIntersectWithWidth(a1: Vector2, a2: Vector2, b1: Vector2, b2: Vector2, aWidth: number, bWidth: number) {
-        function offsetLine(start: Vector2, end: Vector2, offset: number) {
-            //Offset the line by the offset value in the perpendicular direction
-            const dx = end.x - start.x
-            const dy = end.y - start.y
-            const len = Math.sqrt(dx * dx + dy * dy)
-            const ux = dx / len
-            const uy = dy / len
-            return {
-                start: new Vector2(start.x + offset * uy, start.y - offset * ux),
-                end: new Vector2(end.x + offset * uy, end.y - offset * ux),
-            }
-        }
-
-        const a1Offset = offsetLine(a1, a2, aWidth / 2)
-        const a2Offset = offsetLine(a1, a2, -aWidth / 2)
-
-        const b1Offset = offsetLine(b1, b2, bWidth / 2)
-        const b2Offset = offsetLine(b1, b2, -bWidth / 2)
-
-        return this.planeIntersect(a1Offset.start, a2Offset.end, b1Offset.start, b2Offset.end)
-    }
-
-    findIntersection(objectPredictions: Vector2[], egoPredictions: Vector2[]) {
-        if (objectPredictions.length < 2 || egoPredictions.length < 2) return null
-
-        const egoWidth = 1.5
-        const objectWidth = 1
+    findIntersection(objectPredictions: Prediction[], ego: ObjectDataWithPrediction) {
+        if (objectPredictions.length < 2 || ego.predictions.length < 2) return null
 
         for (let i = 0; i < objectPredictions.length - 1; i++) {
             const objectPos0 = objectPredictions[i]
             const objectPos1 = objectPredictions[i + 1]
 
-            for (let j = 0; j < egoPredictions.length - 1; j++) {
-                const egoPos0 = egoPredictions[j]
-                const egoPos1 = egoPredictions[j + 1]
-                const intersection = this.lineIntersect(egoPos0, egoPos1, objectPos0, objectPos1)
+            for (let j = 0; j < ego.predictions.length - 1; j++) {
+                const egoPos0 = ego.predictions[j]
+                const egoPos1 = ego.predictions[j + 1]
+                const intersection = this.lineIntersect(egoPos0.position, egoPos1.position, objectPos0.position, objectPos1.position)
                 if (intersection) {
-                    return intersection
+                    const egoTime = (egoPos1.timestamp - egoPos0.timestamp) * intersection?.ua
+                    const objectTime = (objectPos1.timestamp - objectPos0.timestamp) * intersection?.ub
+
+                    const timeDiff = Math.abs(egoTime - objectTime)
+
+                    const LENGTH = 4
+                    const threshold = LENGTH / ego.velocity.length()
+
+                    if (timeDiff < threshold) {
+                        return { x: intersection.x, y: intersection.y }
+                    }
                 }
             }
         }
@@ -116,7 +86,6 @@ export class CollisionDetector {
         const normalizedEgoVelocity = egoVelocity.clone().normalize()
         const egoEndpoint = normalizedEgoVelocity.multiplyScalar(MAX_DISTANCE)
         const distance = this.distanceBetweenPointAndLineSegment(objectPosition.x, objectPosition.y, 0, 0, egoEndpoint.x, egoEndpoint.y)
-        console.log(distance)
         if (distance < CAR_WIDTH / 2) {
             return objectPosition
         }

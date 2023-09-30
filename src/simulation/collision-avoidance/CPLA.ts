@@ -3,7 +3,7 @@ import { ScenarioTypeChecker } from './ScenarioRecognizer'
 import { EgoData } from './CollisionAvoidanceSimulation'
 import { ScenarioType } from '../../pages/dataset-selection/types'
 
-const ANGLE_THRESHOLD = 20
+const ANGLE_THRESHOLD = 15
 export class CPLA implements ScenarioTypeChecker {
     type = ScenarioType.CPLA
 
