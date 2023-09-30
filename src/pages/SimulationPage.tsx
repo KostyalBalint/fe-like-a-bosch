@@ -134,8 +134,6 @@ export const SimulationPage = (props: SimulationPageProps) => {
         }
     }, [props.values.length, isPlaying, speed])
 
-    console.log(currentSimulationStepData)
-
     return (
         <SelectedObjectProvider>
             <Stack height="100vh" width="100vw" className="bg-[#262628]">
