@@ -18,7 +18,6 @@ export function Ego(props: EgoParams) {
             x={0}
             y={0}
             heading={props.heading + Math.PI / 2}
-            headlights
             predictions={props.predictions?.map((p) => p.position)}
             speed={props.speed}
             yawRate={props.yawRate}

@@ -1,4 +1,5 @@
 import { CatmullRomCurve3, TubeGeometry, Vector2, Vector3 } from 'three'
+import { material } from './helpers/gradientMaterial'
 
 interface Path3DParams {
     path: Vector2[]
@@ -12,12 +13,13 @@ export const Path3D = (props: Path3DParams) => {
         props.path.map((p) => new Vector3(p.x, props.pathHeight, p.y)),
         false
     )
+
     const tubeGeometry = new TubeGeometry(curve, 100, props.radius, 10, props.closed)
     tubeGeometry.scale(1, 0.05, 1)
     return (
         <mesh>
             <primitive object={tubeGeometry} attach="geometry" />
-            <meshPhysicalMaterial attach="material" color="#4287f5" />
+            <primitive object={material} attach="material" />
         </mesh>
     )
 }

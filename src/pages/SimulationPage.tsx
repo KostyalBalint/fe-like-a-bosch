@@ -1,10 +1,11 @@
 import { AppBar, Stack } from '@mui/material'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import { View3D } from '../components/3d/View3D'
 import { ObjectDataWithPrediction, Prediction } from './DatasetSelectionPage'
 import { PlaybackControl } from '../components/PlaybackControl'
-import { KeyboardControls, KeyboardControlsEntry } from '@react-three/drei'
+import SpeedIcon from '@mui/icons-material/Speed'
 import { Vector2 } from 'three'
+import classnames from 'classnames'
 
 export enum ScenarioType {
     CPNCO = 'CPNCO',
@@ -41,11 +42,17 @@ type SimulationPageProps = {
     values: SimulationResult[]
 }
 
-export enum KeyboardsControls {
-    forward = 'forward',
-    back = 'back',
-    left = 'left',
-    right = 'right',
+function ScenarioTypeIndicator({ children, active }: { children: ReactNode; active: boolean }) {
+    return (
+        <div
+            className={classnames(
+                'w-full py-4 text-center border-2 border-gray-800 text-gray-700 tracking-wider font-bold rounded-lg',
+                active && 'text-orange-800 border-orange-800 bg-amber-700/10'
+            )}
+        >
+            {children}
+        </div>
+    )
 }
 
 export const SimulationPage = (props: SimulationPageProps) => {
@@ -65,43 +72,48 @@ export const SimulationPage = (props: SimulationPageProps) => {
         }
     }, [props.values.length, isPlaying, speed])
 
-    const map = useMemo<KeyboardControlsEntry<KeyboardsControls>[]>(
-        () => [
-            { name: KeyboardsControls.forward, keys: ['ArrowUp', 'KeyW'] },
-            { name: KeyboardsControls.back, keys: ['ArrowDown', 'KeyS'] },
-            { name: KeyboardsControls.left, keys: ['ArrowLeft', 'KeyA'] },
-            { name: KeyboardsControls.right, keys: ['ArrowRight', 'KeyD'] },
-        ],
-        []
-    )
-
     return (
-        <Stack height="100vh" className="bg-[#262628]">
+        <Stack height="100vh" width="100vw" className="bg-[#262628]">
             <AppBar position="static" elevation={0}>
                 <div className="flex items-center justify-between h-16 px-4 bg-gray-900 border-gray-800 border-b">
                     <img src="/logo.png" alt="logo" className="h-8" />
                 </div>
             </AppBar>
-            <KeyboardControls map={map}>
-                <View3D
-                    config={{
-                        showPredictions: true,
-                    }}
-                    isPlaying={isPlaying}
-                    ego={currentSimulationStepData.ego}
-                    objects={currentSimulationStepData.objects}
-                />
-            </KeyboardControls>
-            <PlaybackControl
-                timestamp={currentSimulationStepData.timestamp - props.values[0].timestamp}
-                value={currentSimulationStep}
-                onTogglePlayback={() => setIsPlaying((isPlaying) => !isPlaying)}
-                onChange={(value) => setCurrentSimulationStep(value)}
-                speed={speed}
-                onSpeedChange={setSpeed}
-                isPlaying={isPlaying}
-                total={props.values.length}
-            />
+            <Stack height="100%" flexGrow={1} direction="row">
+                <Stack height="100%" width="100%">
+                    <View3D
+                        config={{
+                            showPredictions: true,
+                        }}
+                        isPlaying={isPlaying}
+                        ego={currentSimulationStepData.ego}
+                        objects={currentSimulationStepData.objects}
+                    />
+                    <PlaybackControl
+                        timestamp={currentSimulationStepData.timestamp - props.values[0].timestamp}
+                        value={currentSimulationStep}
+                        onTogglePlayback={() => setIsPlaying((isPlaying) => !isPlaying)}
+                        onChange={(value) => setCurrentSimulationStep(value)}
+                        speed={speed}
+                        onSpeedChange={setSpeed}
+                        isPlaying={isPlaying}
+                        total={props.values.length}
+                    />
+                </Stack>
+                <Stack width={400} className="p-8 bg-gray-950 items-center flex-shrink-0">
+                    <Stack className="items-center">
+                        <SpeedIcon className="text-white" />
+                        <h1 className="text-4xl font-bold text-white ">{(currentSimulationStepData.ego.speed * 3.6).toFixed(0)} km/h</h1>
+                        <small className="uppercase text-xs mt-1 text-white">speed</small>
+                    </Stack>
+
+                    <Stack className="items-center mt-8 w-full gap-4">
+                        {Object.keys(ScenarioType).map((type) => (
+                            <ScenarioTypeIndicator active={currentSimulationStepData.scenarioType === type}>{type}</ScenarioTypeIndicator>
+                        ))}
+                    </Stack>
+                </Stack>
+            </Stack>
         </Stack>
     )
 }

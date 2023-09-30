@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import { useGLTF } from '@react-three/drei'
-import { MeshPhysicalMaterial } from 'three'
+import { Color, MeshPhongMaterial, MeshPhysicalMaterial } from 'three'
 import { useFrame } from '@react-three/fiber'
 
 interface TeslaProps {
@@ -13,13 +13,8 @@ export function Tesla(props: TeslaProps) {
     // @ts-ignore
     const { nodes, materials } = useGLTF('/assets/tesla.glb')
 
-    const bodyMaterial = new MeshPhysicalMaterial({
-        color: 'white',
-        metalness: 1.0,
-        roughness: 0.5,
-        clearcoat: 1.0,
-        clearcoatRoughness: 0.03,
-        sheen: 0.5,
+    const bodyMaterial = new MeshPhongMaterial({
+        color: '#050505',
     })
 
     const wheel_fl = useRef<any>()
@@ -32,7 +27,7 @@ export function Tesla(props: TeslaProps) {
 
     const yawRate = props.yawRate || 0
     const speed = props.speed || 0
-    const wheelRadius = 0.2
+    const wheelRadius = 0.09
 
     useFrame((state, delta, frame) => {
         if (!props.isPlaying) return
