@@ -1,8 +1,7 @@
 import { ScenarioTypeChecker } from './ScenarioRecognizer'
-import { ScenarioType } from '../../pages/SimulationPage'
-import { ObjectDataWithPrediction } from '../../pages/DatasetSelectionPage'
 import { IntersectedObject } from './CollisionDetector'
 import { EgoData } from './CollisionAvoidanceSimulation'
+import { ObjectDataWithPrediction, ScenarioType } from '../../pages/dataset-selection/types'
 
 const YEW_RATE_THRESHOLD = 0.18
 export class CPTA implements ScenarioTypeChecker {

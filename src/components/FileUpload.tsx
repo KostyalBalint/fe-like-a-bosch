@@ -23,10 +23,10 @@ export const FileUpload = (props: FileUploadProps) => {
     return (
         <div {...getRootProps()} className="text-white">
             <input {...getInputProps()} />
-            <div className="flex">
-                <PiUploadSimpleBold className="w-12 h-12 mr-4" />
+            <div className="flex items-center">
+                <PiUploadSimpleBold className="w-8 h-8 mr-4 flex-shrink-0" />
 
-                <p>Drag 'n' drop some files here, or click to select</p>
+                <p>Drop your CSV here or click on the box to select a file</p>
             </div>
         </div>
     )

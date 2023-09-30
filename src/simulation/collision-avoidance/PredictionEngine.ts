@@ -1,5 +1,5 @@
-import { ObjectData, ObjectDataWithPrediction, Prediction } from '../../pages/DatasetSelectionPage'
 import { Vector2 } from 'three'
+import { ObjectData, ObjectDataWithPrediction, Prediction } from '../../pages/dataset-selection/types'
 
 const MAX_PREDICTION_SECONDS = 5
 

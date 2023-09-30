@@ -1,9 +1,9 @@
 import { IntersectedObject } from './CollisionDetector'
-import { ScenarioType } from '../../pages/SimulationPage'
 import { CPLA } from './CPLA'
 import { CPTA } from './CPTA'
 import { CPNCO } from './CPNCO'
 import { EgoData } from './CollisionAvoidanceSimulation'
+import { ScenarioType } from '../../pages/dataset-selection/types'
 
 export interface ScenarioTypeChecker {
     type: ScenarioType

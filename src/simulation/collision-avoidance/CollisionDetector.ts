@@ -1,7 +1,6 @@
-import { ObjectData, ObjectDataWithPrediction, Prediction } from '../../pages/DatasetSelectionPage'
-import { ScenarioType } from '../../pages/SimulationPage'
 import { Vector2 } from 'three'
 import { sqrt } from 'three/examples/jsm/nodes/shadernode/ShaderNodeBaseElements'
+import { ObjectData, ObjectDataWithPrediction, Prediction, ScenarioType } from '../../pages/dataset-selection/types'
 
 export type IntersectedObject = {
     intersection: Vector2

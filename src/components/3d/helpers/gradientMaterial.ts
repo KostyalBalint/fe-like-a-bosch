@@ -1,21 +1,22 @@
 import { Color, ShaderMaterial } from 'three'
 
-export const gradientMaterial = new ShaderMaterial({
-    uniforms: {
-        color1: {
-            value: new Color('#a9c5fd'),
+export const createGradientMaterial = (color: Color, toOpacity = 0.3) => {
+    return new ShaderMaterial({
+        uniforms: {
+            color1: {
+                value: color,
+            },
+            opacity1: {
+                value: 1,
+            },
+            color2: {
+                value: color,
+            },
+            opacity2: {
+                value: toOpacity,
+            },
         },
-        opacity1: {
-            value: 1,
-        },
-        color2: {
-            value: new Color('#a9c5fd'),
-        },
-        opacity2: {
-            value: 0.3,
-        },
-    },
-    vertexShader: `
+        vertexShader: `
             varying vec2 vUv;
         
             void main() {
@@ -23,7 +24,7 @@ export const gradientMaterial = new ShaderMaterial({
               gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
             }
           `,
-    fragmentShader: `
+        fragmentShader: `
             uniform vec3 color1;
             uniform vec3 color2;
             uniform float opacity1;
@@ -43,5 +44,6 @@ export const gradientMaterial = new ShaderMaterial({
                 gl_FragColor = vec4(mix(color1, color2, colorMix), alpha);
             }
           `,
-    transparent: true,
-})
+        transparent: true,
+    })
+}

@@ -1,7 +1,7 @@
 import { ScenarioTypeChecker } from './ScenarioRecognizer'
-import { ScenarioType } from '../../pages/SimulationPage'
 import { IntersectedObject } from './CollisionDetector'
 import { EgoData } from './CollisionAvoidanceSimulation'
+import { ScenarioType } from '../../pages/dataset-selection/types'
 
 const ANGLE_THRESHOLD = 30
 export class CPNCO implements ScenarioTypeChecker {

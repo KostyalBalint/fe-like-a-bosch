@@ -1,4 +1,4 @@
-import { ObjectData } from '../../pages/DatasetSelectionPage'
+import { ObjectData } from '../../pages/dataset-selection/types'
 
 export class ObjectFilter {
     filterObjects(objects: ObjectData[]): ObjectData[] {

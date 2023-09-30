@@ -1,16 +1,16 @@
 import React, { createContext, useContext, useState } from 'react'
 
-interface SelectedObjectContext {
+interface SelectedObjectContextProps {
     selectedObject: null | number
     setSelectedObject: (value: null | number) => void
 }
 
-const SelectedObjectContext = createContext<SelectedObjectContext>({
+const SelectedObjectContext = createContext<SelectedObjectContextProps>({
     selectedObject: null,
     setSelectedObject: () => {},
 })
 
-export const SelectedObjectProvider = (props: React.PropsWithChildren) => {
+export const SelectedObjectContextProvider = (props: React.PropsWithChildren) => {
     // Manage your state here
     const [selectedObject, setSelectedObject] = useState<null | number>(null)
 
@@ -24,7 +24,7 @@ export const useSelectedObject = () => {
     const context = useContext(SelectedObjectContext)
 
     if (!context) {
-        throw new Error('useSelectedObject must be used within a SelectedObjectProvider')
+        throw new Error('useSelectedObject must be used within a SelectedObjectContext')
     }
 
     return context

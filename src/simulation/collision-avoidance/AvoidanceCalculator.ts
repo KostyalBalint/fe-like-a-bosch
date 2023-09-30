@@ -1,12 +1,11 @@
-import { ObjectDataWithPrediction } from '../../pages/DatasetSelectionPage'
-import { AvoidanceData, ScenarioType, Signal } from '../../pages/SimulationPage'
 import { IntersectedObject } from './CollisionDetector'
 import { Vector2 } from 'three'
+import { AvoidanceData, ObjectDataWithPrediction, ScenarioType, Signal } from '../../pages/dataset-selection/types'
 
 const MAX_JERK = -30
 const MAX_DECELERATION = -9
-const LIGHT_THRESHOLD = 3
-const HORN_THRESHOLD = 6
+const LIGHT_THRESHOLD = 1.6
+const HORN_THRESHOLD = 1.85
 
 export class AvoidanceCalculator {
     calculateAvoidanceData(ego: ObjectDataWithPrediction, intersectedObject: IntersectedObject | null): AvoidanceData {

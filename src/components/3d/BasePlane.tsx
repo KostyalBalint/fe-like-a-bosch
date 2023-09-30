@@ -16,7 +16,7 @@ export function BasePlane(props: BasePlaneProps) {
         <animated.mesh position={position}>
             <meshPhongMaterial color="royalblue" />
             <gridHelper args={[5000, 5000]}>
-                <meshBasicMaterial color="#666666" side={DoubleSide} />
+                <meshBasicMaterial color="#333" side={DoubleSide} />
             </gridHelper>
         </animated.mesh>
     )

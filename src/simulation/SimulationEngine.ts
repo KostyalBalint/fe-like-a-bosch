@@ -1,5 +1,4 @@
-import { CSVData } from '../pages/DatasetSelectionPage'
-import { SimulationResult } from '../pages/SimulationPage'
+import { CSVData, SimulationResult } from '../pages/dataset-selection/types'
 
 export interface Simulation {
     setDataset(dataset: CSVData[]): void

@@ -1,12 +1,11 @@
 import { Simulation } from '../SimulationEngine'
-import { ScenarioType, SimulationResult } from '../../pages/SimulationPage'
-import { CSVData, ObjectData, Prediction } from '../../pages/DatasetSelectionPage'
 import { AvoidanceCalculator } from './AvoidanceCalculator'
 import { CollisionDetector } from './CollisionDetector'
 import { PredictionEngine } from './PredictionEngine'
 import { ObjectFilter } from './ObjectFilter'
 import { Vector2 } from 'three'
 import { ScenarioRecognizer } from './ScenarioRecognizer'
+import { CSVData, ObjectData, Prediction, ScenarioType, SimulationResult } from '../../pages/dataset-selection/types'
 
 export interface EgoData {
     position: Vector2
@@ -87,18 +86,14 @@ export class CollisionAvoidanceSimulation implements Simulation {
         }
 
         // 4. Calculate avoidance data
-        //const avoidanceData = this.avoidanceCalculator.calculateAvoidanceData(egoPrediction, collidingObject)
+        const avoidanceData = this.avoidanceCalculator.calculateAvoidanceData(egoPrediction, collidingObject)
 
         return {
             timestamp: this.dataset[step].timestamp,
             ego,
             collidingObject,
             objects: objectsWithPredictions,
-            avoidanceData: {
-                decelerationNeeded: 0,
-                signal: null,
-                brakeDistance: 0,
-            },
+            avoidanceData: avoidanceData,
             scenarioType,
         }
     }

@@ -4,6 +4,7 @@ import { volumetricSpotlightMaterial } from '../../helpers/VolumetricMaterial'
 import { Tesla } from '../Tesla'
 import { Path3D } from '../../Path3D'
 import { animated, useSpring } from '@react-spring/three'
+import { View3DConfig } from '../../View3D'
 
 interface CarProps {
     x: number
@@ -19,9 +20,11 @@ interface CarProps {
     showSensors?: boolean
     predictions?: Vector2[]
     isPlaying: boolean
+    brakeDistance?: number
+    config: View3DConfig
 }
 
-export const Car = ({ color = 'gray', opacity = 1, isPlaying, predictions, ...props }: CarProps) => {
+export const Car = ({ color = 'gray', opacity = 1, isPlaying, predictions, brakeDistance, ...props }: CarProps) => {
     const spotLightPositions: {
         position: [number, number, number]
     }[] = [
@@ -47,12 +50,26 @@ export const Car = ({ color = 'gray', opacity = 1, isPlaying, predictions, ...pr
 
     return (
         <>
-            <group scale={[1, 1, -1]}>
-                <Path3D path={predictions ?? []} pathHeight={0.1} radius={0.6} />
-            </group>
+            {props.config.showPredictions && (
+                <group scale={[1, 1, -1]}>
+                    <Path3D path={predictions ?? []} pathHeight={0.1} radius={0.6} />
+                </group>
+            )}
             {/* @ts-ignore */}
             <animated.mesh position={position} rotation={rotation}>
                 <group>
+                    <group scale={[1, 1, -1]} position={[0, 0, 0]}>
+                        {brakeDistance && predictions && props.config.showBrakeDistance && (
+                            <Path3D
+                                color={new Color('#eba9fd')}
+                                toOpacity={0.7}
+                                path={[new Vector2(0, 0), new Vector2(3.8, 0), new Vector2(3.8 + brakeDistance, 0)]}
+                                pathHeight={0.3}
+                                radius={0.3}
+                            />
+                        )}
+                    </group>
+
                     <group rotation={[0, Math.PI / 2, 0]}>
                         <group rotation={[0, 0, 0]} position={[0, 0.1, 1.7]} scale={[0.6, 0.6, 0.6]}>
                             <Tesla yawRate={props.yawRate} speed={props.speed} isPlaying={isPlaying} />
