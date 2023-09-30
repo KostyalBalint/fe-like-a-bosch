@@ -1,5 +1,5 @@
 import { CatmullRomCurve3, TubeGeometry, Vector2, Vector3 } from 'three'
-import { material } from './helpers/gradientMaterial'
+import { gradientMaterial } from './helpers/gradientMaterial'
 
 interface Path3DParams {
     path: Vector2[]
@@ -19,7 +19,7 @@ export const Path3D = (props: Path3DParams) => {
     return (
         <mesh>
             <primitive object={tubeGeometry} attach="geometry" />
-            <primitive object={material} attach="material" />
+            <primitive object={gradientMaterial} attach="material" />
         </mesh>
     )
 }

@@ -6,7 +6,7 @@ import { useFrame } from '@react-three/fiber'
 interface TeslaProps {
     speed?: number
     yawRate?: number
-    isPlaying: boolean
+    isPlaying?: boolean
 }
 
 export function Tesla(props: TeslaProps) {
