@@ -39,9 +39,9 @@ export const SimulationScene = (props: View3DProps & { isTopDownView?: boolean }
         if (!fakeOrbitControlRef.current) return
         if (!followFromBack) return
 
-        const azimuthAngle = props.ego.heading - Math.PI / 2 + fakeOrbitControlRef.current?.azimuthAngle
+        const azimuthAngle = props.ego.heading + Math.PI / 2 - fakeOrbitControlRef.current?.azimuthAngle
 
-        orbitControlRef.current.rotateAzimuthTo(azimuthAngle, true)
+        orbitControlRef.current.rotateAzimuthTo(-azimuthAngle, true)
     })
 
     return (
@@ -77,6 +77,16 @@ export const SimulationScene = (props: View3DProps & { isTopDownView?: boolean }
                         headlights={props.avoidanceData.signal === Signal.HEADLIGHT_FLASH}
                     />
                     {!props.isTopDownView && <BasePlane carPosition={props.ego.position} />}
+
+                    <CameraControls
+                        enabled={props.isTopDownView}
+                        camera={fakeCamera}
+                        ref={fakeOrbitControlRef}
+                        smoothTime={0.05}
+                        maxPolarAngle={(80 / 180) * Math.PI}
+                        minDistance={5}
+                        maxDistance={60}
+                    />
                 </group>
                 {props.isTopDownView && (
                     <OrthographicCamera
@@ -100,15 +110,6 @@ export const SimulationScene = (props: View3DProps & { isTopDownView?: boolean }
                 <CameraControls
                     enabled={!props.isTopDownView}
                     ref={orbitControlRef}
-                    smoothTime={0.05}
-                    maxPolarAngle={(80 / 180) * Math.PI}
-                    minDistance={5}
-                    maxDistance={60}
-                />
-                <CameraControls
-                    enabled={props.isTopDownView}
-                    camera={fakeCamera}
-                    ref={fakeOrbitControlRef}
                     smoothTime={0.05}
                     maxPolarAngle={(80 / 180) * Math.PI}
                     minDistance={5}
