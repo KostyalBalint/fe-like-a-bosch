@@ -2,7 +2,7 @@ import React, { createRef, ReactElement, Suspense, useEffect } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { BasePlane } from './BasePlane'
 import { Lights } from './Lights'
-import { CameraControls, Environment, OrthographicCamera, PerspectiveCamera } from '@react-three/drei'
+import { CameraControls, OrthographicCamera, PerspectiveCamera } from '@react-three/drei'
 import { Ego } from './Ego'
 import { Perf } from 'r3f-perf'
 import { ObjectDataWithPrediction, Prediction } from '../../pages/DatasetSelectionPage'
@@ -13,6 +13,7 @@ import { OrthographicCamera as OrthographicCameraImpl } from 'three/src/cameras/
 import CameraControlsImpl from 'camera-controls'
 import { IntersectedObject } from '../../simulation/collision-avoidance/CollisionDetector'
 import { useSelectedObject } from '../../providers/selectedObjectProvider'
+import { PerspectiveCamera as PerspectiveCameraImpl } from 'three/src/cameras/PerspectiveCamera'
 
 interface View3DConfig {
     showPredictions: boolean
@@ -45,7 +46,7 @@ export function View3D(props: View3DProps): ReactElement {
             >
                 <MyScene {...props} />
             </Canvas>
-            <div className="absolute right-0 top-0 w-[30vw] aspect-video bg-gray-900">
+            <div className="absolute bottom-0 left-0 w-[30vw] aspect-video bg-gray-900">
                 <Canvas
                     style={{ height: '100%', width: '100%' }}
                     gl={{
@@ -72,17 +73,18 @@ const MyScene = (props: View3DProps & { isTopDownView?: boolean }) => {
     const orbitControlRef = createRef<CameraControlsImpl>()
     const fakeOrbitControlRef = createRef<CameraControlsImpl>()
 
-    const cameraRef = createRef<OrthographicCameraImpl>()
+    const orthoCameraRef = createRef<OrthographicCameraImpl>()
+    const perspectiveCameraRef = createRef<PerspectiveCameraImpl>()
 
     const { setSelectedObject, selectedObject } = useSelectedObject()
 
     const followFromBack = true
 
     useEffect(() => {
-        cameraRef.current?.lookAt(10, 0, 0)
-        cameraRef?.current?.rotateOnWorldAxis(new Vector3(0, 1, 0), -1.23918377)
-        cameraRef.current?.updateProjectionMatrix()
-    }, [cameraRef])
+        orthoCameraRef.current?.lookAt(10, 0, 0)
+        orthoCameraRef?.current?.rotateOnWorldAxis(new Vector3(0, 1, 0), -1.23918377)
+        orthoCameraRef.current?.updateProjectionMatrix()
+    }, [orthoCameraRef])
 
     useFrame(() => {
         if (!orbitControlRef.current) return
@@ -123,7 +125,7 @@ const MyScene = (props: View3DProps & { isTopDownView?: boolean }) => {
                 <BasePlane carPosition={props.ego.position} />
                 {props.isTopDownView && (
                     <OrthographicCamera
-                        ref={cameraRef}
+                        ref={orthoCameraRef}
                         makeDefault
                         position={[10, 10, 0]}
                         zoom={8}
@@ -137,7 +139,7 @@ const MyScene = (props: View3DProps & { isTopDownView?: boolean }) => {
                 )}
                 {!props.isTopDownView && (
                     <>
-                        <PerspectiveCamera far={200} makeDefault position={[-20, 10, 0]} />
+                        <PerspectiveCamera ref={perspectiveCameraRef} far={200} makeDefault position={[-15, 10, 0]} />
                         <Perf position="top-left" className="absolute" />
                     </>
                 )}
