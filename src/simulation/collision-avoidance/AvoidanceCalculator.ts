@@ -18,13 +18,25 @@ export class AvoidanceCalculator {
             decelerationNeeded = ego.velocity.lengthSq() / (2 * distance)
             signal = this.calculateSignal(decelerationNeeded)
         }
-        //const breakDistance = calculateBreakDistance(ego.velocity.lengthSq(), MAX_DECELERATION)
+        const aEgo = 2
+        const breakDistance = this.calculateBreakDistance(aEgo, ego.velocity.length())
 
         return {
             decelerationNeeded: decelerationNeeded,
-            brakeDistance: 0,
+            brakeDistance: breakDistance,
             signal: signal,
         }
+    }
+
+    calculateBreakDistance(aEgo: number, vEgo: number) {
+        const t2 = (MAX_DECELERATION - aEgo) / MAX_JERK
+        const dv1 = (MAX_JERK / 2) * t2 ** 2 + aEgo * t2
+        const v1 = vEgo + dv1
+        const d2 = (MAX_JERK / 6) * t2 ** 3 + (aEgo / 2) * t2 ** 2 + vEgo * t2
+        const dv2 = -v1
+        const t3 = dv2 / MAX_DECELERATION
+        const d3 = (MAX_DECELERATION / 2) * t3 ** 2 + v1 * t3
+        return d2 + d3
     }
 
     calculateDistance(predictions: Vector2[], intersectedObject: Vector2) {
